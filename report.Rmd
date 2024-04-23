@@ -1,7 +1,62 @@
 ---
-title: "Project Title"
-author: "Monica Colon-Vargas & Amos Okutse"
-output: pdf_document
+title: "Posible Title"
+thanks: "Replication files are available on the author's Github account (https://github.com/MCV20/GLM-project.git). **Current version**: `r format(Sys.time(), '%B %d, %Y')`"
+#subtitle: "Short title goes here!"
+author:
+- Amos Okutse$^1$
+- Monica Colon-Vargas$^1$
+- $^1$School of Public Health, Brown University, Providence, RI.
+abstract: | 
+  **Introduction:** hi
+  
+  **Objective:** hi
+  **Methods:** hi
+  
+  **Results:** hi
+  
+  **Conclusion:** hi
+  
+  
+  
+  ***Keywords:*** *Obesity, *Pandemic*, *Health risk*, *Lower socioeconomic groups.*
+keywords: "pandoc, r markdown, knitr"
+#date: "  `r format(Sys.time(), '%d %B, %Y')` "
+geometry: margin=1in
+mainfont: cochineal
+header-includes:
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \usepackage{fvextra}
+- \usepackage{float}
+- \usepackage{wrapfig}
+- \usepackage{amsmath}
+- \usepackage{threeparttable} %used to fix table with notes
+- \usepackage{float}
+- \usepackage{graphicx}
+- \usepackage{microtype}
+- \usepackage{setspace}
+- \usepackage[font=singlespacing]{caption} #can change font here for captions here!!
+- \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines, commandchars=\\\{\}}
+- \singlespacing
+fontsize: 11pt
+output:
+  bookdown::pdf_document2:
+    latex_engine: xelatex
+    dev: cairo_pdf
+    toc: false
+    toc_depth: 4
+    number_sections: false
+    keep_md: false
+link-citations: yes
+colorlinks: yes
+linkcolor: blue
+urlcolor: blue
+bibliography: references.bib
+bibliostyle: bibtex
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -10,16 +65,30 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
+The World Health Organization (WHO) defines obesity as a chronic and intricate disease characterized by an accumulation of excess fat that poses significant health risks. This condition is not confined to isolated cases but has become alarmingly prevalent across numerous countries worldwide, warranting recognition as a global pandemic (CITE PAPER1). Among its many complications, obesity significantly elevates the risk of various health issues, including diabetes, fatty liver disease, hypertension, cardiovascular events like heart attacks and strokes, cognitive decline, joint ailments such as osteoarthritis, disrupted sleep patterns due to conditions like obstructive sleep apnea, and an increased susceptibility to certain types of cancer (CITE PAPER1). 
+
+Literature suggests that the likelihood of obesity is influenced by a range of factors beyond individual characteristics, including demographic attributes, community infrastructure, socioeconomic conditions, and specific environmental factors within communities (CITE PAPER 2). In certain countries, particularly among lower socioeconomic groups, obesity rates have surged dramatically due to urbanization, shifts in diet and food availability, and reduced physical activity. This rise in obesity is linked to a significant increase in mortality from chronic diseases like type 2 diabetes, heart disease, and certain cancers, potentially shortening life expectancy by up to 20 years. Given the preventable nature of obesity and its associated health risks, early detection is crucial to mitigate the development of serious conditions such as cardiovascular issues, diabetes, and asthma. Obesity's complex origins involve various factors including socioeconomic status, occupation, and lifestyle habits like smoking and physical activity levels. Physical activity and eating habits are key in preventing obesity, as it primarily stems from an imbalance between calories consumed and expended. Weight loss typically involves reducing calorie intake, increasing energy expenditure, or both. When individuals consume more energy than needed, the excess is stored as fat, leading to obesity. Therefore, maintaining a healthy weight relies on a balanced diet and regular physical activity. (CITE PAPER3) 
+
+
+This work is centered in identifying determinants associated with obesity, with particular emphasis on exploring the interplay between socioeconomic indicators and lifestyle behaviors. In Latin American obesity rates have reached alarming levels, posing serious health risks and placing a substantial burden on healthcare systems CITE(paper4). Therefore this work will address the global health issue of obesity, with a specific focus on the diverse populations of Mexico, Peru, and Colombia. By examining individuals' eating habits and physical condition, this research aims to understand the factors contributing to obesity prevalence in these regions and understand the underlying mechanisms driving the escalating rates of obesity. 
+
+
 # Methodology
 
-## Data
+### Data
 
-## Methods
+### Statistical Modeling
 
 # Results
 
-## Model Results
+### Descriptive Statistics
 
-## Model Diagnostics
+### Model Results
+
+### Model Diagnostics
 
 # Discussion
+
+# Code Appendix
+
+# References
