@@ -1,5 +1,4 @@
 ## Set WD
-setwd("C:/Users/Monica/OneDrive - Brown University/Desktop/PHP2605 GLM/Project/")
 options("install.lock"=FALSE)
 
 ## Load libraries
@@ -40,7 +39,7 @@ ggplot(dat, aes(x = NObeyesdad))+
   xlab("Obesity Status")
 
 
-## Sumary Statistics
+## Summary Statistics
 dat %>% tbl_summary(digits = list(everything() ~ c(2)),
                     statistic = list(all_continuous() ~ "{mean} ({sd})"),
                     by = NObeyesdad,
@@ -102,7 +101,7 @@ dat %>% tbl_summary(digits = list(everything() ~ c(2)),
   bold_labels()
 
 
-
+## Some plots (not usefull?)
 my_palette <- c("darkblue", "darkgreen", "darkred", "purple4")
 
 ggplot(dat, aes(x = MTRANS, fill = NObeyesdad)) +
@@ -137,7 +136,6 @@ dat %>% select_if(is.numeric) %>% cor() %>% corrplot()
 
 
 ## Factor more variables 
-## (maybe? Most variables take values only 1,2 or 3 so we could factor them)
 dat <- dat %>% mutate(
   FCVC = factor(FCVC),
   NCP = factor(NCP),
@@ -146,7 +144,7 @@ dat <- dat %>% mutate(
   TUE = factor(TUE)
 )
 
-## Remove weight variable
+## Remove weight variable and rename fam history
 dat <- dat %>% dplyr::select(-Weight)
 dat <- dat %>% rename(fam_hist = family_history_with_overweight)
 
@@ -155,6 +153,9 @@ mod_polr <- polr(NObeyesdad ~.,
                  data = dat, Hess=TRUE,method = "logistic")
 ## Summary
 summary(mod_polr)
+stargazer(mod_polr, type="text", style="apsr", single.row = T)
+
+
 
 ## Plot Estimated slopes
 plot_ic <- function(data, title) {
@@ -168,20 +169,12 @@ plot_ic <- function(data, title) {
     ggtitle(title)
 }
 confints <- confint(mod_polr)
-plot_ic(as.data.frame(confints),"95% CI")
-#View(tidy(mod_polr, conf.int = TRUE))
+plot_ic(as.data.frame(confints),"95% CI") ## Too many variables 
+
 
 ## Get predictions
 predictions <- predict(mod_polr, newdata = dat)
-confusionMatrix(predictions,dat$NObeyesdad)
-
-## Diagnostics ?
-brant(mod_polr)
-DescTools::PseudoR2(
-  mod_polr, 
-  which = c("McFadden", "CoxSnell", "Nagelkerke", "AIC")
-)
-
+confusionMatrix(predictions,dat$NObeyesdad) #Very bad model
 
 ## Too many variables. Variable selection by Lasso
 ## Set model Matrix
@@ -213,11 +206,6 @@ lasso.mod <- ordinalNet(X, Y,
 ## Coefficients
 coef(lasso.mod, matrix = T) #age,heigt NCP,CH2O,FAF,TUE
 
-## Plot for AIC? not necessarily
-df <- as.data.frame(summary(lasso.mod))
-ggplot(df,aes(x=lambdaVals,y = aic))+geom_point()+geom_line()
-lambda.min <- df$lambdaVals[which.min(df$aic)]
-
 
 ## Fit reduced model
 mod_polr_reduced <- polr(NObeyesdad ~ Age + Height + NCP + CH2O + FAF +TUE, 
@@ -230,6 +218,9 @@ plot_ic(as.data.frame(confints),"95% CI")
 
 
 ## Try interactions
+mod.amos1 <- polr(NObeyesdad ~ Age*Height +TUE + NCP+FAF + CH2O, 
+                  data = dat, Hess=TRUE,method = "logistic")
+stargazer(mod.amos1, type="text", style="apsr", single.row = T)
 mod1 <- polr(NObeyesdad ~ Age+TUE+ Height + NCP*FAF + CH2O, 
              data = dat, Hess=TRUE,method = "logistic")
 stargazer(mod1, type="text", style="apsr", single.row = T)
@@ -243,11 +234,12 @@ mod3 <- polr(NObeyesdad ~ Age+ Height + NCP*FAF*CH2O + TUE,
 stargazer(mod3, type="text", style="apsr", single.row = T)
 
 
+
 ## Model Comparisons (the reduced model with no interactions is prefered)
+anova(mod_polr_reduced,mod.amos1)
 anova(mod_polr_reduced,mod1)
 anova(mod_polr_reduced,mod2)
-anova(mod_polr_reduced,mod3)
-
+anova(mod_polr_reduced,mod3) # Best model is the one with no interactions
 
 AIC(mod_polr_reduced,mod1,mod2,mod3)
 BIC(mod_polr_reduced,mod1,mod2,mod3)
@@ -255,22 +247,14 @@ BIC(mod_polr_reduced,mod1,mod2,mod3)
 
 ## Predictions
 predictions <- predict(mod_polr_reduced, newdata = dat)
-confusionMatrix(predictions,dat$NObeyesdad)
-
+confusionMatrix(predictions,dat$NObeyesdad) #Still very bad we try oversampling
 
 ## Oversampling
-
-
-
 dat2 <- upSample(dat %>% dplyr::select(-NObeyesdad),dat$NObeyesdad)
 dat2 <- dat2 %>% rename(NObeyesdad = "Class")
 
-colnames(dat2)
-colnames(dat)
 
-
-## Fit models
-## Fit proportional odds model with lasso penalty
+## variable Selection with LASSO
 ## Set model Matrix
 X <- model.matrix(NObeyesdad ~., 
                   data = dat2,
@@ -298,30 +282,44 @@ lasso.mod2 <- ordinalNet(X, Y,
                          alpha = 1)
 
 ## Coefficients
-coef(lasso.mod2, matrix = T) #all models
+coef(lasso.mod2, matrix = T) #all variables without Gender
 
 ## Predictions
 predictions <- predict(lasso.mod2, newdata = dat2,type = "class")
 confusionMatrix(as.factor(predictions),Y) #Class 1=Normal 2=Obese 3=Overweight 4=Underweigt
 
 
-## Prop odds model
+## Prop odds model With variables selected by LASSO (remove only Gender)
 mod.up <- polr(NObeyesdad ~., 
-               data = dat2, Hess=TRUE,method = "logistic")
+               data = dat2 %>% dplyr::select(-Gender), Hess=TRUE,method = "logistic")
 summary(mod.up)
+stargazer(mod.up, type="text", style="apsr", single.row = T)
+
+## Fit model with variables selected by P-value
+mod.up_reduced <-  polr(NObeyesdad ~ Height + fam_hist+FAVC + NCP + CAEC + CH2O + FAF + TUE + MTRANS, 
+                        data = dat2, Hess=TRUE,method = "logistic")
+summary(mod.up_reduced)
+
+
+## Fit Model with variables selected first (with data not upsampled)
+mod.up_reduced2 <- polr(NObeyesdad ~ Age + Height + NCP + CH2O + FAF +TUE, 
+                        data = dat2, Hess=TRUE,method = "logistic")
+
+
 ## Predictions
-predictions <- predict(mod.up, newdata = dat2)
+predictions <- predict(mod.up_reduced2, newdata = dat2)
 confusionMatrix(predictions,dat2$NObeyesdad)
 
+anova(mod.up,mod.up_reduced2)
+anova(mod.up_reduced, mod.up) #model diagnostics on the mod.up_reduced (pvalue selection on upsampling data)
 
 
 
 
 
-
-
-
-
+################################################################################
+########################## Not important below #################################
+################################################################################
 
 
 ## Cross Validation 
@@ -353,3 +351,29 @@ summary(mod.up)
 ## Predictions
 predictions <- predict(mod.up, newdata = dat2)
 confusionMatrix(predictions,dat2$NObeyesdad)
+
+
+
+## Neural Network
+library(tidyverse)
+library(neuralnet)
+dat_subset <- dat %>% dplyr::select(Age,fam_hist,FCVC,NCP,CAEC,FAF,TUE,MTRANS,NObeyesdad)
+dat_subset$fam_hist <- as.numeric(dat_subset$fam_hist)-1
+dat_subset$FCVC <- as.numeric(dat_subset$FCVC)
+
+dat_subset$NCP <- factor(dat_subset$NCP, levels = c("1","2","3","4"))
+dat_subset$NCP <- as.numeric(dat_subset$NCP)
+
+dat_subset$CAEC <- as.numeric(dat_subset$CAEC)
+
+dat_subset$FAF <- as.numeric(dat_subset$FAF)-1
+dat_subset$TUE <-as.numeric(dat_subset$TUE)-1
+dat_subset$MTRANS <- as.numeric(dat_subset$MTRANS)
+
+
+model <- neuralnet(
+  NObeyesdad~.,
+  data=dat_subset,
+  hidden=1,
+  linear.output = FALSE
+)
