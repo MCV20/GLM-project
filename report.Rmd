@@ -1,0 +1,25 @@
+---
+title: "Project Title"
+author: "Monica Colon-Vargas & Amos Okutse"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+# Methodology
+
+## Data
+
+## Methods
+
+# Results
+
+## Model Results
+
+## Model Diagnostics
+
+# Discussion
