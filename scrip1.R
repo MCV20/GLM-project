@@ -449,32 +449,32 @@ brant::brant(mod.up_reduced)
 
 ## (2) Residual Analysis: Conduct residual analysis to assess the model's goodness-of-fit. Calculate and inspect various residuals like deviance residuals, Pearson residuals, or scaled Schoenfeld residuals.
 ##______________________________________________________________________________
-# Get the number of levels in the outcome variable
-n_levels <- length(levels(dat2$NObeyesdad))
-
-# Initialize a matrix to hold the deviance residuals for each class
-dev_resid <- matrix(NA, nrow = nrow(dat2), ncol = n_levels)
-
-# Loop over each level of the outcome variable
-for (i in 1:n_levels) {
-  # Binarize the outcome variable at the current level
-  binary_outcome <- ifelse(dat2$NObeyesdad >= levels(dat2$NObeyesdad)[i], 1, 0)
-  
-  # Fit a logistic regression model for the binary outcome
-  binary_model <- glm(binary_outcome ~ Height + fam_hist + FAVC + NCP + 
-                        CAEC + CH2O + FAF + TUE + MTRANS, data = dat2, family = binomial())
-  
-  # Compute the deviance residuals for the binary model
-  dev_resid[,i] <- residuals(binary_model, type = "deviance")
-}
-
-# Plot the deviance residuals for each class
-par(mfrow = c(2, 2))  # Adjust this to match the number of levels in your outcome variable
-for (i in 1:n_levels) {
-  plot(dev_resid[,i], main = paste("Deviance Residuals for Class", i),
-       xlab = "Observation Number", ylab = "Deviance Residuals")
-  abline(h = 0, lty = 2)
-}
+# # Get the number of levels in the outcome variable
+# n_levels <- length(levels(dat2$NObeyesdad))
+# 
+# # Initialize a matrix to hold the deviance residuals for each class
+# dev_resid <- matrix(NA, nrow = nrow(dat2), ncol = n_levels)
+# 
+# # Loop over each level of the outcome variable
+# for (i in 1:n_levels) {
+#   # Binarize the outcome variable at the current level
+#   binary_outcome <- ifelse(dat2$NObeyesdad >= levels(dat2$NObeyesdad)[i], 1, 0)
+#   
+#   # Fit a logistic regression model for the binary outcome
+#   binary_model <- glm(binary_outcome ~ Height + fam_hist + FAVC + NCP + 
+#                         CAEC + CH2O + FAF + TUE + MTRANS, data = dat2, family = binomial())
+#   
+#   # Compute the deviance residuals for the binary model
+#   dev_resid[,i] <- residuals(binary_model, type = "deviance")
+# }
+# 
+# # Plot the deviance residuals for each class
+# par(mfrow = c(2, 2))  # Adjust this to match the number of levels in your outcome variable
+# for (i in 1:n_levels) {
+#   plot(dev_resid[,i], main = paste("Deviance Residuals for Class", i),
+#        xlab = "Observation Number", ylab = "Deviance Residuals")
+#   abline(h = 0, lty = 2)
+# }
 
 
 
@@ -561,7 +561,7 @@ aic = AIC(mod.up, mod.up_reduced, mod.up_reduced2)
 bic = BIC(mod.up, mod.up_reduced, mod.up_reduced2)
 ab = cbind(aic, bic)
 ab
-
+git 
 # (8) Sensitivity Analysis --sensitivity analysis by assessing the robustness of your results to changes in modeling assumptions or data specifications. (Example: changed method argument in polr function).
 ##------------------------------------------------------------------------------
 sensitivity_model <- polr(formula = NObeyesdad ~ Height + fam_hist + FAVC + NCP + 
