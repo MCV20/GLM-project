@@ -52,18 +52,6 @@ dat <- dat %>% mutate(
 dat <- dat %>% dplyr::select(-Weight)
 dat <- dat %>% rename(fam_hist = family_history_with_overweight)
 
-## Function to Plot IC
-plot_ic <- function(data, title) {
-  data <- data %>% mutate(estimate = (`2.5 %` + `97.5 %`)/2)
-  data$vars <- rownames(data)
-  
-  ggplot(data, aes(x = estimate, y = vars)) +
-    geom_point() +
-    geom_segment(aes(x = `2.5 %`, xend = `97.5 %`, yend = vars)) +
-    geom_vline(xintercept = 0, color = "red", linetype = "dashed") +
-    ggtitle(title)
-}
-
 ## Variable Selection by Lasso = pvalue in this case
 ## Fit reduced model
 mod_polr_reduced <- polr(NObeyesdad ~ Age + Height + NCP + CH2O + FAF +TUE, 
@@ -72,7 +60,7 @@ summary(mod_polr_reduced)
 stargazer(mod_polr_reduced, type="text", style="apsr", single.row = T)
 
 confints <- confint(mod_polr_reduced)
-plot_ic(as.data.frame(confints),"95% CI") ## Too many variables 
+
 
 tidy(mod_polr_reduced,conf.int = T,p.values = T)
 
@@ -192,13 +180,22 @@ anova(mod.up_int2,mod.up_int5)
 anova(mod.up_int3,mod.up_int5)
 anova(mod.up_int4,mod.up_int5) 
 
+confint(mod.up_int5)
+
+## Function to Plot IC
+plot_ic <- function(x, title = "95% CI") {
+  h <- as.data.frame(summary(x)$coefficients)
+  h <- h %>% mutate(up = Value + `Std. Error`*1.96,
+                    down = Value - `Std. Error`*1.96)
+  h$vars <- rownames(h)
+  
+  ggplot(h, aes(x = Value, y = vars)) +
+    geom_point() +
+    geom_segment(aes(x = up, xend = down, yend = vars)) +
+    geom_vline(xintercept = 0, color = "red", linetype = "dashed") +
+    ggtitle(title)
+}
+plot_ic(mod.up_int5)
+
 ## Model Diagnostics on mod.up_int5
-
-
-
-
-
-
-
-
 
