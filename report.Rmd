@@ -150,6 +150,20 @@ Given the relatively modest sample size of our dataset, we anticipate potential 
 
 ### Statistical Modeling
 
+Since the outcome variable exhibits an ordinal nature, where the categories can be ordered as underweight < normal < overweight < obese, we opted for a modeling approach suited to such data characteristics. Specifically, we employed the generalized linear model framework, fitting a proportional odds model. This modeling technique allows us to account for the ordinal nature of the outcome variable and the inherent ordering of its categories. By utilizing the proportional odds model, we can assess the relationship between the predictors and the ordinal outcome variable while accommodating the cumulative nature of the categories. 
+
+
+### Variable Selection  
+In light of the considerable number of variables present within the dataset, an approach to variable selection opted. To this end, we employed two distinct methodologies for variable selection. Primarily, variables were selected based on their significance as determined by p-values derived from the proportional odds model. Additionally, we conducted variable selection utilizing a proportional odds model with lasso penalization, a technique that inherently incorporates variable selection by penalizing less influential predictors. Subsequently, interactions among selected variables were explored, and the resultant models were meticulously compared to discern the most parsimonious and informative model structure.
+
+### Class Imbalance
+Given the class imbalance within the outcome variable, we  address this issue by employing an upsampling technique. The goal is to decrease the disparity by augmenting the instances of minority classes to achieve parity with the majority class, thereby fostering a more balanced representation across all categories. Subsequently, within this augmented dataset, we applied the same two variable selection techniques previously described. This comprehensive approach ensures that the variable selection procedures are conducted on a dataset that reflects a more equitable distribution of observations across the various outcome categories, thereby mitigating potential biases and bolstering the reliability of the ensuing models. We additionally proceed to fit an additional model using the augmented dataset,incorporating solely those covariates that demonstrated statistical significance within the original dataset.
+
+### Model Comparisons
+The majority of models analyzed in this study were nested, with assessments primarily relying on information criteria such as the Akaike Information Criteria (AIC) and Bayesian Information Criteria (BIC). Notably, the BIC was preferred over the AIC due to its heightened penalty with larger sample sizes, leading to more stringent significance thresholds CITE(BIC). Model comparisons were conducted using the likelihood ratio test (LRT), aimed at examining competing models by testing the null hypothesis that the simpler and more complex models are equally effective. Specifically, this test assesses whether the additional parameters in the larger model significantly improve fit, implying that their effect sizes are statistically indistinguishable from zero.
+
+
+
 # Results
 
 ### Descriptive Statistics

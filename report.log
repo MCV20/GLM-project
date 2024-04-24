@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 24.1) (preloaded format=xelatex 2024.2.20)  23 APR 2024 20:30
+This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 24.1) (preloaded format=xelatex 2024.2.20)  23 APR 2024 20:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1223,19 +1223,19 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 
 LaTeX Warning: \verb may be unreliable inside tabularx on input line 200.
 
-[2] [3] (report.aux)
+[2] [3] [4] (report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 22458 strings out of 409673
- 409816 string characters out of 5774501
+ 22464 strings out of 409673
+ 409890 string characters out of 5774501
  1938630 words of memory out of 5000000
- 44202 multiletter control sequences out of 15000+600000
+ 44208 multiletter control sequences out of 15000+600000
  568457 words of font info for 124 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  90i,10n,122p,1531b,526s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on report.pdf (3 pages).
+Output written on report.pdf (4 pages).
