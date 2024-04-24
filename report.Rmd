@@ -30,6 +30,7 @@ header-includes:
 - \usepackage{fvextra}
 - \usepackage{float}
 - \usepackage{wrapfig}
+- \usepackage{tabularx}
 - \usepackage{amsmath}
 - \usepackage{threeparttable} %used to fix table with notes
 - \usepackage{float}
@@ -76,6 +77,76 @@ This work is centered in identifying determinants associated with obesity, with 
 # Methodology
 
 ### Data
+
+The dataset, accessible online at the UC Irvine Machine Learning Repository, includes information pertinent to estimating obesity levels among $(n=411)$ individuals aged 14 to 61 hailing from Mexico, Peru, and Colombia. Collected via a web-based survey administered to anonymous respondents, the dataset comprises 17 attributes and was available online for a duration of 30 days. Data collection involved posing questions as delineated in Table 1, which also details the variables under study and the methodology employed in the data collection process.
+
+\begin{table}
+\footnotesize
+\centering
+\caption{Variable Description}
+\label{vardes}
+\begin{tabularx}{\textwidth}{@{}lXX@{}}
+\toprule
+Variable & Description & Values\\
+\addlinespace
+\midrule
+\texttt{Nobeyesdad} & Obesity Level & Insufficient/Normal ObesityI/ObesityII ObesityIII/OverweightI/OverweightII\\
+\addlinespace
+\midrule
+\texttt{Gender} & What is your gender? & Female/Male\\
+\addlinespace
+\midrule
+\texttt{Age} & What is your age? & Numeric Value\\
+\addlinespace
+\midrule
+\texttt{Height} & What is your height? & Numeric Value (m)\\
+\addlinespace
+\midrule
+\texttt{Weight} & What is your weight? & Numeric Value (kg)\\
+\addlinespace
+\midrule
+\scriptsize{\verb+family_history_with_overweight+} &Has a family member suffered or suffers from overweight? & Yes/No\\
+\addlinespace
+\midrule
+\texttt{FAVC} & Do you eat high caloric food frequently? & Yes/No\\
+\addlinespace
+\midrule
+\texttt{FCVC} & Do you usually eat vegetables in your meals? & Never/Sometimes/Always\\
+\addlinespace
+\midrule
+\texttt{NCP} & How many main meals do you have daily? & Numeric Value\\
+\addlinespace
+\midrule
+\texttt{CAEC} & Do you eat any food between meals? & No/Sometimes/Frequently Always\\
+\addlinespace
+\midrule
+\texttt{Smoker} & Do you smoke & Yes/No\\
+\addlinespace
+\midrule
+\texttt{CH20} &How much water do you drink daily & Numeric Value\\
+\addlinespace
+\midrule
+\texttt{SCC} & Do you monitor the calories you eat daily & Yes/No\\
+\addlinespace
+\midrule
+\texttt{FAF} & How often do you do physical activity & Numeric Value\\
+\addlinespace
+\midrule
+\texttt{TUE} & How much time do you use technological devices such as cell phone, videogames, television, computer and others? & Numeric Value\\
+\addlinespace
+\midrule
+\texttt{CALC} &How often do you drink alcohol & Never/Sometimes/ Frequently/Always\\
+\addlinespace
+\midrule
+\texttt{MTRANS} & Which transportation do you usually use & Automobile/Motorbike Bike/Public/Walking\\
+\addlinespace
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+### Data Pre-processing
+Given the relatively modest sample size of our dataset, we anticipate potential challenges in conducting robust analyses. Our outcome variables comprise seven distinct levels, encompassing three tiers of obesity (Type I, II, III), two tiers of overweight (I, II), as well as normal weight and underweight categories. However, certain categories contain a limited number of individuals, necessitating the consolidation of some for better statistical reliability. Accordingly, we introduce a novel class termed "Obese," which consolidates the three levels of obesity, alongside a separate class denoted as "Overweight," housing the two levels thereof, while retaining the remaining categories unchanged. Furthermore, certain categories within the covariates exhibited minimal representation, with some even lacking individuals in certain categories. Consequently, we undertook additional aggregation of these classes. For instance, within the alcohol consumption variable, we combined the "always" and "frequently" classes into a singular category. Similarly, in the transportation variable, we merged "motorbike" and "automobile" into a consolidated class termed "motor vehicle," while amalgamating "walking" and "bike" into a unified category. 
 
 ### Statistical Modeling
 
