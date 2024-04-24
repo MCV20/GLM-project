@@ -282,7 +282,9 @@ lasso.mod2 <- ordinalNet(X, Y,
                          alpha = 1)
 
 ## Coefficients
-coef(lasso.mod2, matrix = T) #all variables without Gender
+lasso.mod2$aic %>% which.min()
+lasso.mod2$coefs[14,]
+coef(lasso.mod2, matrix = T)#all variables without Gender
 
 ## Predictions
 predictions <- predict(lasso.mod2, newdata = dat2,type = "class")
@@ -299,6 +301,33 @@ stargazer(mod.up, type="text", style="apsr", single.row = T)
 mod.up_reduced <-  polr(NObeyesdad ~ Height + fam_hist+FAVC + NCP + CAEC + CH2O + FAF + TUE + MTRANS, 
                         data = dat2, Hess=TRUE,method = "logistic")
 summary(mod.up_reduced)
+
+
+## Interactions
+## Fit model with variables selected by P-value
+
+mod.up_reduce.int2 <-  polr(NObeyesdad ~ Height + fam_hist+FAVC + NCP*CH2O + CAEC  + FAF + TUE + MTRANS, 
+                        data = dat2, Hess=TRUE,method = "logistic")
+stargazer(mod.up_reduce.int2, type="text", style="apsr", single.row = T)
+
+mod.up_reduce.int3 <-  polr(NObeyesdad ~ Height + fam_hist+FAVC + NCP+ CH2O*FAF  + CAEC + TUE + MTRANS, 
+                            data = dat2, Hess=TRUE,method = "logistic")
+stargazer(mod.up_reduce.int3, type="text", style="apsr", single.row = T) #most significant
+
+mod.up_reduce.int4 <-  polr(NObeyesdad ~ Height + fam_hist+FAVC + NCP*CH2O*FAF  + CAEC + TUE + MTRANS, 
+                            data = dat2, Hess=TRUE,method = "logistic")
+stargazer(mod.up_reduce.int4, type="text", style="apsr", single.row = T) #most significant
+
+##Compare
+anova(mod.up_reduced,mod.up_reduce.int2)
+anova(mod.up_reduced,mod.up_reduce.int3)
+anova(mod.up_reduced,mod.up_reduce.int4)
+
+anova(mod.up_reduce.int2,mod.up_reduce.int3)
+anova(mod.up_reduce.int2,mod.up_reduce.int4)
+anova(mod.up_reduce.int3,mod.up_reduce.int4) #model 4 wins
+
+
 
 
 ## Fit Model with variables selected first (with data not upsampled)
@@ -338,7 +367,21 @@ anova(mod.up,mod.up_reduced2_int4) #reject the mod.up_reduced2_int4 (pvalue sele
 
 
 
+anova(mod.up_reduce.int4,mod.up_reduced2_int4) #mod.up_reduced2_int4 wins
 
+
+###
+AIC(mod.up_reduce.int4,mod_polr_reduced)
+
+AIC(mod.up_reduce.int4)
+AIC(mod_polr_reduced)
+AIC(lasso.mod2)
+
+which.min(lasso.mod2$bic)
+
+
+lasso.mod2$coefs[3,]
+coef(lasso.mod2$coefs,matrix = T)
 
 ################################################################################
 ########################## Not important below #################################
@@ -374,7 +417,6 @@ summary(mod.up)
 ## Predictions
 predictions <- predict(mod.up, newdata = dat2)
 confusionMatrix(predictions,dat2$NObeyesdad)
-
 
 
 ## Neural Network
