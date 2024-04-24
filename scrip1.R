@@ -377,3 +377,225 @@ model <- neuralnet(
   hidden=1,
   linear.output = FALSE
 )
+################################################################################
+## MODEL DIAGNOSTICS
+################################################################################
+# Load required libraries for model checking
+library(MASS)    # for polr function
+library(ggplot2) # for visualization
+library(caret)   # for cross-validation
+library(car)     # for leverage calculations
+library(ROCR)    # for ROC curve
+library(brant)  # for proportional odds testing
+library(randomForest)
+library(ggplot2)
+
+
+## Prepare the model for presentation
+(ctable <- coef(summary(mod.up_reduced)))
+## calculate and store p values
+p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+## combined table
+(ctable <- cbind(ctable, "p value" = p))
+(ci <- confint(mod.up_reduced)) # default method gives profiled CIs
+## OR and CI
+exp(cbind(OR = coef(mod.up_reduced), ci))
+##------------------------------------------------------------------------------
+
+## (1) The Proportional Odds Assumption
+##------------------------------------------------------------------------------
+#test that the proportional odds assumption holds
+# Function to calculate cumulative logits
+sf <- function(probs) {
+  sapply(1:(length(probs)-1), function(i) qlogis(sum(probs[1:i])))
+}
+
+# Get predicted probabilities for each level of the outcome
+pred_probs <- predict(mod.up_reduced, type = "probs")
+
+# Calculate cumulative logits for each observation
+logits1 <- t(apply(pred_probs, 1, sf))
+par(mfrow = c(1,2))
+# Plotting the cumulative logits against one predictor (e.g., Height)
+# Assuming 'Height' is a continuous predictor in your model
+
+## For height
+plot(dat2$Height, logits1[,1], xlab = "Height", ylab = "Logit(Y>=1)",
+     main = "Test of Proportional Odds Assumption")
+points(dat2$Height, logits[,2], col = "red")
+points(dat2$Height, logits[,3], col = "blue")
+
+# Add legend to the plot
+legend("topright", legend = c("Logit(Y>=1)", "Logit(Y>=2)", "Logit(Y>=3)"),
+       col = c("black", "red", "blue"), pch = 1)
+
+
+## For Age
+logits2 <- t(apply(pred_probs, 1, sf))
+plot(dat2$Age, logits2[,1], xlab = "Height", ylab = "Logit(Y>=1)",
+     main = "Test of Proportional Odds Assumption")
+points(dat2$Age, logits[,2], col = "red")
+points(dat2$Age, logits[,3], col = "blue")
+
+# Add legend to the plot
+legend("topright", legend = c("Logit(Y>=1)", "Logit(Y>=2)", "Logit(Y>=3)"),
+       col = c("black", "red", "blue"), pch = 1)
+
+
+## testing the null of parallel regression 
+brant::brant(mod.up_reduced)
+
+
+
+## (2) Residual Analysis: Conduct residual analysis to assess the model's goodness-of-fit. Calculate and inspect various residuals like deviance residuals, Pearson residuals, or scaled Schoenfeld residuals.
+##______________________________________________________________________________
+# Get the number of levels in the outcome variable
+n_levels <- length(levels(dat2$NObeyesdad))
+
+# Initialize a matrix to hold the deviance residuals for each class
+dev_resid <- matrix(NA, nrow = nrow(dat2), ncol = n_levels)
+
+# Loop over each level of the outcome variable
+for (i in 1:n_levels) {
+  # Binarize the outcome variable at the current level
+  binary_outcome <- ifelse(dat2$NObeyesdad >= levels(dat2$NObeyesdad)[i], 1, 0)
+  
+  # Fit a logistic regression model for the binary outcome
+  binary_model <- glm(binary_outcome ~ Height + fam_hist + FAVC + NCP + 
+                        CAEC + CH2O + FAF + TUE + MTRANS, data = dat2, family = binomial())
+  
+  # Compute the deviance residuals for the binary model
+  dev_resid[,i] <- residuals(binary_model, type = "deviance")
+}
+
+# Plot the deviance residuals for each class
+par(mfrow = c(2, 2))  # Adjust this to match the number of levels in your outcome variable
+for (i in 1:n_levels) {
+  plot(dev_resid[,i], main = paste("Deviance Residuals for Class", i),
+       xlab = "Observation Number", ylab = "Deviance Residuals")
+  abline(h = 0, lty = 2)
+}
+
+
+
+ 
+## (3) Lack of Fit Test: Perform a formal test to check for lack of fit. One way to do this is by comparing the observed and predicted frequencies in each category using goodness-of-fit tests like the Pearson chi-squared test or likelihood ratio test.
+##_____________________________________________________________________________
+model <- polr(formula = NObeyesdad ~ Height + fam_hist + FAVC + NCP + 
+                CAEC + CH2O + FAF + TUE + MTRANS, data = dat2, Hess = TRUE, 
+              method = "logistic")
+
+# Get the number of levels in the outcome variable
+n_levels <- length(levels(dat2$NObeyesdad))
+# Get predicted probabilities for each level of the outcome
+pred_probs <- predict(model, type = "probs")
+# Calculate observed probabilities for each level of the outcome
+obs_probs <- table(dat2$NObeyesdad) / nrow(dat2)
+# Plot observed vs fitted probabilities for each class
+plot(1:n_levels, obs_probs, type = "b", pch = 19, xlab = "Class", ylab = "Probability",
+     main = "Observed vs Fitted Probabilities", ylim = range(c(obs_probs, pred_probs)))
+points(1:n_levels, colMeans(pred_probs), col = "red", type = "b", pch = 18)
+legend("topright", legend = c("Observed", "Fitted"), col = c("black", "red"), pch = c(19, 18))
+
+
+# Chi-squared test: The chi-squared test assesses whether a statistically significant difference exists between the observed and predicted frequencies. The null hypothesis of the chi-squared test is that there is no difference between the observed and predicted frequencies, implying that the model fits the data well.
+obs_pred <- cbind(table(dat2$NObeyesdad), table(predict(model, type = "class")))
+obs_pred <- as.data.frame(obs_pred)
+colnames(obs_pred) <- c("Observed", "Predicted")
+chisq.test(obs_pred)
+
+
+ 
+# (4) Check for Influential Observations: Identify influential observations that may have a significant impact on the model's estimates by examining leverage, Cook's distance, or hat values.
+##------------------------------------------------------------------------------
+# Leverage calculation
+model <- polr(formula = NObeyesdad ~ Height + fam_hist + FAVC + NCP + 
+                CAEC + CH2O + FAF + TUE + MTRANS, data = dat2, Hess = TRUE, 
+              method = "logistic")
+# Initialize a matrix to hold the parameter estimates
+params <- matrix(NA, nrow = nrow(dat2), ncol = length(coef(model)))
+# Loop over each observation
+for (i in 1:nrow(dat2)) {
+  # Fit the model without the i-th observation
+  model_i <- update(model, data = dat2[-i, ])
+  # Store the parameter estimates
+  params[i, ] <- coef(model_i)
+}
+# Compute the change in parameter estimates
+change <- max(abs(params - coef(model)))
+# Print the maximum change: This gives the maximum change in any parameter estimate when each observation is left out. Observations that cause a large change might be considered influential. A common rule of thumb is that an observation might be influential if removing it changes the coefficient estimate by more than 20%.
+print(change) #1.6071
+
+#(5) Variable Importance: look at the magnitude of the coefficients. Larger coefficients (in absolute value) indicate more important variables. Depending on the context of the analysis, the interpretation of the models may vary. For example, if one model ranks a certain predictor variable as highly influential while the other model ranks it lower, it could suggest that the relationship between that predictor and the response is not stable across different modeling approaches. inconsistent rankings of coefficients between models in sensitivity analysis highlight the need for cautious interpretation and further investigation to ensure robust and reliable model results. [Maybe talk about the variable selection approaches??]
+##------------------------------------------------------------------------------
+# Get the coefficients
+coef <- coef(model)
+# Get the absolute values of the coefficients
+abs_coef <- abs(coef)
+# Create a data frame for plotting
+coef_df <- data.frame(Variable = names(abs_coef), Importance = abs_coef)
+# Order the variables by importance
+coef_df <- coef_df[order(coef_df$Importance, decreasing = TRUE), ]
+aa = ggplot(coef_df, aes(x = reorder(Variable, Importance), y = Importance)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Variable Importance\n (Logistic method)", x = "Variable", y = "Importance")
+aa
+
+
+
+# (6) Check for Multicollinearity: Values of vif up to 5 are usually interpreted as uncritical, values above 5 denote a considerable multicollinearity.
+##------------------------------------------------------------------------------
+# VIF calculation
+vif <- car::vif(model)
+print(vif)
+
+
+# (7) Model Comparisons: lower is better
+##------------------------------------------------------------------------------
+# AIC and BIC
+anova(mod.up,mod.up_reduced2)
+anova(mod.up_reduced, mod.up)
+
+aic = AIC(mod.up, mod.up_reduced, mod.up_reduced2)
+bic = BIC(mod.up, mod.up_reduced, mod.up_reduced2)
+ab = cbind(aic, bic)
+ab
+
+# (8) Sensitivity Analysis --sensitivity analysis by assessing the robustness of your results to changes in modeling assumptions or data specifications. (Example: changed method argument in polr function).
+##------------------------------------------------------------------------------
+sensitivity_model <- polr(formula = NObeyesdad ~ Height + fam_hist + FAVC + NCP + 
+                            CAEC + CH2O + FAF + TUE + MTRANS, data = dat2, Hess = TRUE, 
+                          method = "probit") # Changed method to probit
+# do variable importance again and compare to the original by plotting side by side
+coef <- coef(sensitivity_model)
+# Get the absolute values of the coefficients
+abs_coef <- abs(coef)
+# Create a data frame for plotting
+coef_df <- data.frame(Variable = names(abs_coef), Importance = abs_coef)
+# Order the variables by importance
+coef_df2 <- coef_df[order(coef_df$Importance, decreasing = TRUE), ]
+bb = ggplot(coef_df2, aes(x = reorder(Variable, Importance), y = Importance)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "Variable Importance\n (Probit Method)", x = "Variable", y = "Importance")
+bb
+
+# check with random forest to see
+set.seed(123)  # for reproducibility
+model_rf <- randomForest(NObeyesdad ~ Height + fam_hist + FAVC + NCP + 
+                           CAEC + CH2O + FAF + TUE + MTRANS, data = dat2, importance = TRUE)
+importance <- importance(model_rf)
+#for (class in colnames(importance)) {
+  imp_df <- data.frame(Variable = rownames(importance), Importance = importance[,class])
+cc = ggplot(imp_df, aes(x = reorder(Variable, Importance), y = Importance)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    labs(title = "Variable Importance\n (Random Forest))",
+         x = "Variable", y = "Importance")
+#}
+gridExtra::grid.arrange(aa, bb, cc, ncol = 3)
+
+
+
+
