@@ -257,10 +257,18 @@ dat %>% tbl_summary(digits = list(everything() ~ c(2)),
                       MTRANS ~ "Transportation"))%>%
   add_overall() %>% 
   bold_labels() %>%
-  as_kable_extra(booktabs = TRUE, caption = "Summary Statistics Grouped by  Outcome Category") %>% 
+  as_kable_extra(booktabs = TRUE, caption = "Summary Statistic Stratified by Outcome Category") %>% 
   kableExtra::kable_styling(latex_options = "scale_down")
 
 ```
+
+Table 2 presents an overview of participant characteristics stratified by each outcome category.  Notably, the distribution across categories reveals a significant class imbalance, with only 34 participants categorized as underweight compared to 64 classified as obese. Conversely, the overweight category encompasses 116 participants, with the highest representation observed within the normal weight classification.
+
+
+Within the subset of 64 obese participants, 53 (86.80%) individuals  exhibit familial overweight history, whereas among the underweight subset, 16 (47.06%) individuals demonstrate a similar familial predisposition.
+Regarding dietary habits, individuals categorized as normal weight exhibit the highest prevalence of high-caloric food consumption, followed sequentially by obese, overweight, and underweight counterparts. Additionally, observing the frequency of vegetable consumption, we can see 55.88% of underweight participants consuming vegetables in all three main meals, while 59% of obese and overweight individuals consume vegetables in two main meals. Meal frequency reveals that most participants consume three daily main meals, while a minority consumes only one daily meal. Moreover, between-meal eating habits are prevalent across all weight categories, with few individuals abstaining from between-meal consumption. Remarkably, a significant proportion (52.95%) of underweight participants report frequent between-meal snacking. Hydration patterns among participants indicate a consistent consumption of approximately 2-3 liters of water daily. Public transportation emerges as the preferred mode of transportation among participants. Furthermore, physical activity engagement varies across weight categories, with 45.9% of obese individuals reporting no weekly physical activity.
+
+
 
 
 

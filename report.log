@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 24.1) (preloaded format=xelatex 2024.2.20)  23 APR 2024 21:19
+This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 24.1) (preloaded format=xelatex 2024.2.20)  23 APR 2024 23:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1309,12 +1309,20 @@ LaTeX Font Info:    Font shape `TU/cochineal(0)/m/n' will be
 (Font)              scaled to size 7.665pt on input line 349.
 [4]
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 366.
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 371.
 
 LaTeX Font Warning: Font shape `TU/lmtt/bx/it' in size <10.95> not available
-(Font)              Font shape `TU/lmtt/b/sl' tried instead on input line 370.
+(Font)              Font shape `TU/lmtt/b/sl' tried instead on input line 375.
 
-[5] [6] (report.aux)
+[5]
+Underfull \vbox (badness 10000) detected at line 451
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 451
+ []
+
+[6] [7] (report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -1323,10 +1331,10 @@ L3 programming layer <2024-01-22>
 Here is how much of TeX's memory you used:
  23773 strings out of 409673
  429255 string characters out of 5774501
- 1953630 words of memory out of 5000000
+ 1954630 words of memory out of 5000000
  45476 multiletter control sequences out of 15000+600000
  568611 words of font info for 131 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  90i,14n,122p,1531b,526s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on report.pdf (6 pages).
+Output written on report.pdf (7 pages).
