@@ -210,7 +210,7 @@ coef(lasso.mod, matrix = T) #age,heigt NCP,CH2O,FAF,TUE
 ## Fit reduced model
 mod_polr_reduced <- polr(NObeyesdad ~ Age + Height + NCP + CH2O + FAF +TUE, 
                          data = dat, Hess=TRUE,method = "logistic")
-summary(mod_polr_reduced)
+summary(mod_polr_reduced) 
 
 ## Coefficients
 confints <- confint(mod_polr_reduced)
@@ -310,8 +310,31 @@ mod.up_reduced2 <- polr(NObeyesdad ~ Age + Height + NCP + CH2O + FAF +TUE,
 predictions <- predict(mod.up_reduced2, newdata = dat2)
 confusionMatrix(predictions,dat2$NObeyesdad)
 
-anova(mod.up,mod.up_reduced2)
-anova(mod.up_reduced, mod.up) #model diagnostics on the mod.up_reduced (pvalue selection on upsampling data)
+## Interactions 
+mod.up_reduced2_int1 <- polr(NObeyesdad ~ Age*Height + NCP + CH2O + FAF +TUE, 
+                        data = dat2, Hess=TRUE,method = "logistic")
+stargazer(mod.up_reduced2_int1, type="text", style="apsr", single.row = T)
+
+mod.up_reduced2_int2 <- polr(NObeyesdad ~ Age+Height + NCP*CH2O + FAF +TUE, 
+                             data = dat2, Hess=TRUE,method = "logistic")
+stargazer(mod.up_reduced2_int2, type="text", style="apsr", single.row = T)
+
+mod.up_reduced2_int3 <- polr(NObeyesdad ~ Age+Height + NCP+CH2O*FAF +TUE, 
+                             data = dat2, Hess=TRUE,method = "logistic")
+stargazer(mod.up_reduced2_int3, type="text", style="apsr", single.row = T)
+
+mod.up_reduced2_int4 <- polr(NObeyesdad ~ Age+Height + NCP*CH2O*FAF +TUE, 
+                             data = dat2, Hess=TRUE,method = "logistic")
+stargazer(mod.up_reduced2_int4, type="text", style="apsr", single.row = T)
+
+anova(mod.up_reduced2,mod.up_reduced2_int1)
+anova(mod.up_reduced2,mod.up_reduced2_int2) ## Significant
+anova(mod.up_reduced2,mod.up_reduced2_int3)
+anova(mod.up_reduced2,mod.up_reduced2_int4)## Significant
+
+anova(mod.up_reduced2_int2,mod.up_reduced2_int4) #Model with 3-way interaction significant
+
+anova(mod.up,mod.up_reduced2_int4) #reject the mod.up_reduced2_int4 (pvalue selection on upsampling data)
 
 
 
