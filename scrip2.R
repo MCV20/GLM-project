@@ -192,7 +192,7 @@ anova(mod.up_int2,mod.up_int5)
 anova(mod.up_int3,mod.up_int5)
 anova(mod.up_int4,mod.up_int5) 
 
-## Model Diagnostics on mod.up.int5
+## Model Diagnostics on mod.up_int5
 
 
 
