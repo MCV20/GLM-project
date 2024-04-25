@@ -225,7 +225,7 @@ Since the outcome variable exhibits an ordinal nature, where the categories can 
 In light of the considerable number of variables present within the dataset, an approach to variable selection opted. To this end, we employed two distinct methodologies for variable selection. Primarily, variables were selected based on their significance as determined by p-values derived from the proportional odds model. Additionally, we conducted variable selection utilizing a proportional odds model with lasso penalization, a technique that inherently incorporates variable selection by penalizing less influential predictors. Subsequently, interactions among selected variables were explored, and the resultant models were meticulously compared to discern the most parsimonious and informative model structure. 
 
 ### Class Imbalance
-Given the class imbalance within the outcome variable, we  address this issue by employing an upsampling technique. The goal is to decrease the disparity by augmenting the instances of minority classes to achieve parity with the majority class, thereby fostering a more balanced representation across all categories. Subsequently, within this augmented dataset, we applied the same two variable selection techniques previously described. This comprehensive approach ensures that the variable selection procedures are conducted on a dataset that reflects a more equitable distribution of observations across the various outcome categories, thereby mitigating potential biases and bolstering the reliability of the ensuing models. We additionally proceed to fit an additional model using the augmented dataset,incorporating solely those covariates that demonstrated statistical significance within the original dataset.
+Given the class imbalance within the outcome variable, we  address this issue by employing an upsampling technique. The goal is to decrease the disparity by augmenting the instances of minority classes to achieve parity with the majority class, thereby fostering a more balanced representation across all categories. Subsequently, within this augmented dataset, we applied the same two variable selection techniques previously described. This approach ensures that the variable selection procedures are conducted on a dataset that reflects a more equitable distribution of observations across the various outcome categories, thereby mitigating potential biases and bolstering the reliability of the ensuing models. We additionally proceed to fit an additional model using the augmented dataset,incorporating solely those covariates that demonstrated statistical significance within the original dataset.
 
 ### Model Comparisons
 The majority of models analyzed in this study were nested, with assessments primarily relying on information criteria such as the Akaike Information Criteria (AIC) and Bayesian Information Criteria (BIC). Notably, the BIC was preferred over the AIC due to its heightened penalty with larger sample sizes, leading to more stringent significance thresholds CITE(BIC). Model comparisons were conducted using the likelihood ratio test (LRT), aimed at examining competing models by testing the null hypothesis that the simpler and more complex models are equally effective. Specifically, this test assesses whether the additional parameters in the larger model significantly improve fit, implying that their effect sizes are statistically indistinguishable from zero.
@@ -272,10 +272,168 @@ Regarding dietary habits, individuals categorized as normal weight exhibit the h
 
 ### Model Results
 
+A proportional odds model was employed to analyze the original dataset comprising $(n=498)$ observations. Variable selection techniques, specifically LASSO regularization and p-value-based selection, yielded identical sets of significant predictors. These predictors included age, height, daily number of complete meals, weekly physical activity, daily water intake (L), and technology usage duration. To comprehensively explore potential interactions among these predictors, two-way and three-way interaction terms were examined. The interaction between age and height, the daily frequency of meals and physical activity, as well as physical activity and water intake, were found to be statistically non-significant. However, a three-way interaction involving the daily frequency of meals, physical activity, and water intake exhibited significance across most coefficient estimates. Despite this, a series of likelihood ratio tests were conducted, comparing models with varying complexity to a simpler baseline model. Likelihood ratio tests consistently favored the simpler model over those incorporating the interaction terms. Consequently, despite the significant findings regarding the three-way interaction, the simpler model without interactions was deemed more favorable based on the statistical evidence obtained from the likelihood ratio tests. Table 3 displays the AIC and BIC values for the various models. It is evident that the reduced model, which excludes interactions, exhibits the lowest AIC and BIC scores.
+
+```{r}
+mod.polr.reduced <- polr(NObeyesdad ~ Age + Height + NCP + CH2O + FAF +TUE, 
+                         data = dat, Hess=TRUE,method = "logistic")
+## Interactions
+mod1 <- polr(NObeyesdad ~ Age*Height +TUE + NCP+FAF + CH2O, 
+                  data = dat, Hess=TRUE,method = "logistic")
+
+mod2 <- polr(NObeyesdad ~ Age+TUE+ Height + NCP*FAF + CH2O, 
+             data = dat, Hess=TRUE,method = "logistic")
+
+mod3 <- polr(NObeyesdad ~ Age+TUE+ Height + NCP+ FAF*CH2O, 
+             data = dat, Hess=TRUE,method = "logistic")
+
+mod4 <- polr(NObeyesdad ~ Age+ Height + NCP*FAF*CH2O + TUE, 
+             data = dat, Hess=TRUE,method = "logistic")
+
+res <- data.frame(AIC = AIC(mod.polr.reduced,mod1,mod2,mod3,mod4)$AIC,
+                  BIC = BIC(mod.polr.reduced,mod1,mod2,mod3,mod4)$BIC)
+rownames(res) <- rownames(AIC(mod.polr.reduced,mod1,mod2,mod3,mod4))
+
+res %>% 
+  kbl(caption = "AIC and BIC",
+      booktabs = TRUE, escape = FALSE, align = "c") %>%
+  kable_styling(full_width = FALSE, latex_options = c('hold_position'))
+```
+
+```{r}
+## Create new dataset with Oversampling
+set.seed(123)
+dat2 <- upSample(dat %>% dplyr::select(-NObeyesdad),dat$NObeyesdad)
+dat2 <- dat2 %>% rename(NObeyesdad = "Class")
+
+```
+
+
+One important issue observed in these models pertains to class imbalance, where a disproportionate focus on these models is placed on accurately predicting instances within the normal weight class, while neglecting predictions for other weight categories. This imbalance is evidenced by the extreme case where the obese class fails to yield any predicted instances. Consequently, we address this imbalance by generating a new synthetic dataset wherein the underrepresented classes were upsampled. This augmented dataset now encompasses a total of $n=1148$ observations, evenly distributed with 287 observations allocated to each outcome category.
+
+In the augmented dataset, both variable selection methods are employed. The LASSO penalty method exhibits limited variable selection, as it only omits the gender variable. Conversely, selection based on p-values results in a more concise set of significant variables, including family history of overweight, high-calorie food consumption, daily number of complete meals, eating between meals, physical activity, and technology usage duration. 
+
+Two-way and three-way interactions were considered, including several combinations. Specifically, these interactions involved high-calorie food consumption with daily main meals, the number of daily main meals combined with eating between meals, physical activity in conjunction with the number of daily main meals, daily main meals coupled with physical activity, physical activity paired with eating between meals, and lastly, the three-way interaction among the number of daily meals, physical activity, and eating between meals. It is noteworthy that most interaction terms demonstrated a high level of significance within the models. We conducted comparisons between the simple model and the model incorporating interactions, affirming the significance of these interactions through likelihood ratio tests. Additionally, when comparing models with interactions, the Likelihood ratio test indicated a preference for the model featuring the three-way interaction by concluding that its fit significantly differs from that of the others. Table 4 presents the AIC and BIC, revealing that the model including three interactions (`mod.up.int5`) exhibits the lowest AIC and BIC scores.
+
+
+
+```{r}
+## Variable Selection by P-value
+mod.up <- polr(NObeyesdad ~., 
+               data = dat2, Hess=TRUE,method = "logistic")
+mod.up.reduced <-  polr(NObeyesdad ~ fam_hist + FAVC + NCP + CAEC + FAF + TUE, 
+                        data = dat2, Hess=TRUE,method = "logistic")
+
+## Interactions
+mod.up.int1 <- polr(NObeyesdad ~ fam_hist + FAVC*NCP + CAEC + FAF + TUE, 
+                    data = dat2, Hess=TRUE,method = "logistic")
+mod.up.int2 <- polr(NObeyesdad ~ fam_hist + FAVC+NCP*CAEC + FAF + TUE, 
+                    data = dat2, Hess=TRUE,method = "logistic")
+mod.up.int3 <- polr(NObeyesdad ~ fam_hist + FAVC+NCP*FAF+CAEC + TUE, 
+                    data = dat2, Hess=TRUE,method = "logistic")
+mod.up.int4 <- polr(NObeyesdad ~ fam_hist + FAVC+NCP+FAF*CAEC + TUE, 
+                    data = dat2, Hess=TRUE,method = "logistic")
+mod.up.int5 <- polr(NObeyesdad ~ fam_hist + FAF+NCP*FAVC*CAEC + TUE, 
+                    data = dat2, Hess=TRUE,method = "logistic")
+```
+
+```{r}
+
+res <- data.frame(AIC = AIC(mod.up.reduced,mod.up.int1,mod.up.int2,mod.up.int3,mod.up.int4,mod.up.int5)$AIC,
+                  BIC = BIC(mod.up.reduced,mod.up.int1,mod.up.int2,mod.up.int3,mod.up.int4,mod.up.int5)$BIC)
+
+rownames(res) <- rownames(BIC(mod.up.reduced,mod.up.int1,mod.up.int2,mod.up.int3,mod.up.int4,mod.up.int5))
+
+res %>% 
+  kbl(caption = "AIC and BIC",
+      booktabs = TRUE, escape = FALSE, align = "c") %>%
+  kable_styling(full_width = FALSE, latex_options = c('hold_position'))
+
+
+```
+
+### Coefficients Interpretation
+
+We present significant coefficients of the model with three way interactions
+
+```{=latex}
+\begin{table}[htbp] 
+    \centering 
+    \caption{Model Coefficients} 
+    \label{} 
+    \begin{tabular}{@{\extracolsep{5pt}}lc} 
+        \toprule
+        & NObeyesdad \\ 
+        \midrule
+        fam\_histyes & $-$0.318$^{**}$ \\ 
+        & (0.127) \\ 
+        FAF1 & $-$0.289$^{**}$ \\ 
+        & (0.138) \\ 
+        FAF2 & $-$0.034 \\ 
+        & (0.163) \\ 
+        FAF3 & $-$0.117 \\ 
+        & (0.185) \\ 
+        NCP3 & $-$3.064$^{***}$ \\ 
+        & (0.711) \\ 
+        NCP4 & $-$2.053$^{***}$ \\ 
+        & (0.724) \\ 
+        FAVCyes & $-$2.325$^{***}$ \\ 
+        & (0.685) \\ 
+        CAECno & $-$15.028$^{***}$ \\ 
+        & (0.397) \\ 
+        CAECSometimes & $-$2.854$^{***}$ \\ 
+        & (0.685) \\ 
+        TUE1 & $-$0.014 \\ 
+        & (0.131) \\ 
+        TUE2 & 0.500$^{***}$ \\ 
+        & (0.159) \\ 
+        NCP3:FAVCyes & 2.591$^{***}$ \\ 
+        & (0.758) \\ 
+        NCP4:FAVCyes & 3.001$^{***}$ \\ 
+        & (0.831) \\ 
+        NCP3:CAECno & 18.182$^{***}$ \\ 
+        & (0.399) \\ 
+        NCP3:CAECSometimes & 3.280$^{***}$ \\ 
+        & (0.758) \\ 
+        NCP4:CAECSometimes & 2.413$^{**}$ \\ 
+        & (1.162) \\ 
+        FAVCyes:CAECno & 14.686$^{***}$ \\ 
+        & (0.399) \\ 
+        FAVCyes:CAECSometimes & 2.211$^{***}$ \\ 
+        & (0.742) \\ 
+        NCP3:FAVCyes:CAECno & $-$18.367$^{***}$ \\ 
+        & (0.521) \\ 
+        NCP3:FAVCyes:CAECSometimes & $-$3.218$^{***}$ \\ 
+        & (0.825) \\ 
+        NCP4:FAVCyes:CAECSometimes & $-$1.104 \\ 
+        & (1.281) \\ 
+        \midrule
+        N & 1,148 \\ 
+        \bottomrule
+    \end{tabular} 
+    \begin{center}
+        \footnotesize{$^{*}$p $<$ .1; $^{**}$p $<$ .05; $^{***}$p $<$ .01}
+    \end{center}
+\end{table} 
+
+```
+
+
+```{r}
+
+#as.data.frame(stargazer(mod.up.int5, type="text", style="apsr", single.row = T))%>% kbl(caption = "Model Coefficients",booktabs = TRUE, escape = FALSE, align = "l") %>%kable_styling(full_width = FALSE, latex_options = c('hold_position'))
+
+#stargazer(mod.up.int5, type = "latex", style = "apsr", title = "Model Coefficients")
+```
+
+
 ### Model Diagnostics
+
 
 # Discussion
 
+
+\newpage
 # Code Appendix
 ```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE, include=TRUE}
 ```
