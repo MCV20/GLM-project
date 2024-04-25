@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 24.1) (preloaded format=xelatex 2024.2.20)  24 APR 2024 21:37
+This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 24.1) (preloaded format=xelatex 2024.2.20)  24 APR 2024 21:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1307,52 +1307,64 @@ LaTeX Warning: \verb may be unreliable inside tabularx on input line 254.
 [2] [3]
 LaTeX Font Info:    Font shape `TU/cochineal(0)/m/n' will be
 (Font)              scaled to size 7.665pt on input line 349.
-[4] [5] [6] [7]
+[4] [5]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[6]
 LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 481.
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 459.
 
 LaTeX Font Warning: Font shape `TU/lmtt/bx/it' in size <10.95> not available
-(Font)              Font shape `TU/lmtt/b/sl' tried instead on input line 485.
+(Font)              Font shape `TU/lmtt/b/sl' tried instead on input line 463.
 
 
-Overfull \hbox (36.13487pt too wide) in paragraph at lines 607--607
+Overfull \hbox (36.13487pt too wide) in paragraph at lines 585--585
 []\TU/lmtt/b/n/10.95 AIC[]\TU/lmtt/m/n/10.95 (mod.up.reduced,mod.up.int1,mod.up
 .int2,mod.up.int3,mod.up.int4,mod.up.int5)[]\TU/lmtt/b/n/10.95 $[]\TU/lmtt/m/n/
 10.95 AIC,|  
  []
 
 
-Overfull \hbox (139.61235pt too wide) in paragraph at lines 608--608
+Overfull \hbox (139.61235pt too wide) in paragraph at lines 586--586
 []\TU/lmtt/b/n/10.95 BIC[]\TU/lmtt/m/n/10.95 (mod.up.reduced,mod.up.int1,mod.up
 .int2,mod.up.int3,mod.up.int4,mod.up.int5)[]\TU/lmtt/b/n/10.95 $[]\TU/lmtt/m/n/
 10.95 BIC)|  
  []
 
 
-Overfull \hbox (64.87862pt too wide) in paragraph at lines 610--610
+Overfull \hbox (64.87862pt too wide) in paragraph at lines 588--588
 []\TU/lmtt/b/n/10.95 rownames[]\TU/lmtt/m/n/10.95 ([]\TU/lmtt/b/n/10.95 BIC[]\T
 U/lmtt/m/n/10.95 (mod.up.reduced,mod.up.int1,mod.up.int2,mod.up.int3,mod.up.int
 4,mod.up.int5))|  
  []
 
 
-Underfull \vbox (badness 10000) detected at line 623
+Underfull \vbox (badness 10000) detected at line 630
+ []
+
+[7]
+Underfull \vbox (badness 10000) detected at line 630
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 630
  []
 
 [8]
-Underfull \vbox (badness 10000) detected at line 623
+Underfull \vbox (badness 10000) detected at line 630
  []
 
 
-Underfull \vbox (badness 10000) detected at line 623
+Underfull \vbox (badness 10000) detected at line 630
  []
 
 [9]
-Underfull \vbox (badness 10000) detected at line 623
+Underfull \vbox (badness 10000) detected at line 630
  []
 
 
-Underfull \vbox (badness 10000) detected at line 623
+Underfull \vbox (badness 10000) detected at line 630
  []
 
 [10] [11] (report.aux)
@@ -1363,8 +1375,8 @@ L3 programming layer <2024-01-22>
  ) 
 Here is how much of TeX's memory you used:
  23778 strings out of 409673
- 429334 string characters out of 5774501
- 1954630 words of memory out of 5000000
+ 429353 string characters out of 5774501
+ 1962630 words of memory out of 5000000
  45481 multiletter control sequences out of 15000+600000
  568611 words of font info for 131 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191

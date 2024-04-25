@@ -211,7 +211,7 @@ dat <- dat %>% mutate(
 
 ## Remove weight variable and rename fam history
 dat <- dat %>% dplyr::select(-Weight)
-dat <- dat %>% rename(fam_hist = family_history_with_overweight)
+dat <- dat %>% rename(fam.hist = family_history_with_overweight)
 
 ```
 
@@ -243,7 +243,7 @@ dat %>% tbl_summary(digits = list(everything() ~ c(2)),
                     by = NObeyesdad,
                     missing = "no",
                     label = list(
-                      fam_hist ~"Family history overweight", 
+                      fam.hist ~"Family history overweight", 
                       FAVC ~ "High-calorie food consumption",
                       FCVC ~ "Number of meals veggie consumption",
                       NCP ~ "Daily main meals",
@@ -321,19 +321,19 @@ Two-way and three-way interactions were considered, including several combinatio
 ## Variable Selection by P-value
 mod.up <- polr(NObeyesdad ~., 
                data = dat2, Hess=TRUE,method = "logistic")
-mod.up.reduced <-  polr(NObeyesdad ~ fam_hist + FAVC + NCP + CAEC + FAF + TUE, 
+mod.up.reduced <-  polr(NObeyesdad ~ fam.hist + FAVC + NCP + CAEC + FAF + TUE, 
                         data = dat2, Hess=TRUE,method = "logistic")
 
 ## Interactions
-mod.up.int1 <- polr(NObeyesdad ~ fam_hist + FAVC*NCP + CAEC + FAF + TUE, 
+mod.up.int1 <- polr(NObeyesdad ~ fam.hist + FAVC*NCP + CAEC + FAF + TUE, 
                     data = dat2, Hess=TRUE,method = "logistic")
-mod.up.int2 <- polr(NObeyesdad ~ fam_hist + FAVC+NCP*CAEC + FAF + TUE, 
+mod.up.int2 <- polr(NObeyesdad ~ fam.hist + FAVC+NCP*CAEC + FAF + TUE, 
                     data = dat2, Hess=TRUE,method = "logistic")
-mod.up.int3 <- polr(NObeyesdad ~ fam_hist + FAVC+NCP*FAF+CAEC + TUE, 
+mod.up.int3 <- polr(NObeyesdad ~ fam.hist + FAVC+NCP*FAF+CAEC + TUE, 
                     data = dat2, Hess=TRUE,method = "logistic")
-mod.up.int4 <- polr(NObeyesdad ~ fam_hist + FAVC+NCP+FAF*CAEC + TUE, 
+mod.up.int4 <- polr(NObeyesdad ~ fam.hist + FAVC+NCP+FAF*CAEC + TUE, 
                     data = dat2, Hess=TRUE,method = "logistic")
-mod.up.int5 <- polr(NObeyesdad ~ fam_hist + FAF+NCP*FAVC*CAEC + TUE, 
+mod.up.int5 <- polr(NObeyesdad ~ fam.hist + FAF+NCP*FAVC*CAEC + TUE, 
                     data = dat2, Hess=TRUE,method = "logistic")
 ```
 
@@ -356,70 +356,36 @@ res %>%
 
 We present significant coefficients of the model with three way interactions
 
-```{=latex}
-\begin{table}[htbp] 
-    \centering 
-    \caption{Model Coefficients} 
-    \label{} 
-    \begin{tabular}{@{\extracolsep{5pt}}lc} 
-        \toprule
-        & NObeyesdad \\ 
-        \midrule
-        fam\_histyes & $-$0.318$^{**}$ \\ 
-        & (0.127) \\ 
-        FAF1 & $-$0.289$^{**}$ \\ 
-        & (0.138) \\ 
-        FAF2 & $-$0.034 \\ 
-        & (0.163) \\ 
-        FAF3 & $-$0.117 \\ 
-        & (0.185) \\ 
-        NCP3 & $-$3.064$^{***}$ \\ 
-        & (0.711) \\ 
-        NCP4 & $-$2.053$^{***}$ \\ 
-        & (0.724) \\ 
-        FAVCyes & $-$2.325$^{***}$ \\ 
-        & (0.685) \\ 
-        CAECno & $-$15.028$^{***}$ \\ 
-        & (0.397) \\ 
-        CAECSometimes & $-$2.854$^{***}$ \\ 
-        & (0.685) \\ 
-        TUE1 & $-$0.014 \\ 
-        & (0.131) \\ 
-        TUE2 & 0.500$^{***}$ \\ 
-        & (0.159) \\ 
-        NCP3:FAVCyes & 2.591$^{***}$ \\ 
-        & (0.758) \\ 
-        NCP4:FAVCyes & 3.001$^{***}$ \\ 
-        & (0.831) \\ 
-        NCP3:CAECno & 18.182$^{***}$ \\ 
-        & (0.399) \\ 
-        NCP3:CAECSometimes & 3.280$^{***}$ \\ 
-        & (0.758) \\ 
-        NCP4:CAECSometimes & 2.413$^{**}$ \\ 
-        & (1.162) \\ 
-        FAVCyes:CAECno & 14.686$^{***}$ \\ 
-        & (0.399) \\ 
-        FAVCyes:CAECSometimes & 2.211$^{***}$ \\ 
-        & (0.742) \\ 
-        NCP3:FAVCyes:CAECno & $-$18.367$^{***}$ \\ 
-        & (0.521) \\ 
-        NCP3:FAVCyes:CAECSometimes & $-$3.218$^{***}$ \\ 
-        & (0.825) \\ 
-        NCP4:FAVCyes:CAECSometimes & $-$1.104 \\ 
-        & (1.281) \\ 
-        \midrule
-        N & 1,148 \\ 
-        \bottomrule
-    \end{tabular} 
-    \begin{center}
-        \footnotesize{$^{*}$p $<$ .1; $^{**}$p $<$ .05; $^{***}$p $<$ .01}
-    \end{center}
-\end{table} 
-
-```
-
-
 ```{r}
+
+#tidy(mod.up.int5,pvalue = T)
+
+# Extract coefficient estimates and p-values
+model <- mod.up.int5
+model_summary <- data.frame(summary(mod.up.int5)$coefficients)
+
+# Extract coefficients and standard errors
+coefficients <- coef(model)
+
+standard_errors <- sqrt(model_summary$Std..Error)[1:21]
+
+# Calculate z-values and p-values
+z_values <- coefficients / standard_errors
+p_values <- 2 * pnorm(-abs(z_values))
+
+# Combine coefficients, standard errors, z-values, and p-values into a data frame
+results <- data.frame(
+  estimate = round(coefficients,3),
+  std.errors = round(standard_errors,3),
+  statistic = round(z_values,3),
+  pvalues = round(p_values,4)
+)
+
+results %>%
+  kbl(caption = "Coefficients",
+      booktabs = TRUE, escape = FALSE, align = "c") %>%
+  kable_styling(full_width = FALSE, latex_options = c('hold_position'))
+
 
 #as.data.frame(stargazer(mod.up.int5, type="text", style="apsr", single.row = T))%>% kbl(caption = "Model Coefficients",booktabs = TRUE, escape = FALSE, align = "l") %>%kable_styling(full_width = FALSE, latex_options = c('hold_position'))
 
