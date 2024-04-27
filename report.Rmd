@@ -1,5 +1,5 @@
 ---
-title: "Posible Title"
+title: "Cracking the Obesity Code: Unraveling the Trifecta Intricacies of Meal Patterns, Caloric Food Consuption Rate, and Snacking Habits"
 thanks: "Replication files are available on the author's Github account (https://github.com/MCV20/GLM-project.git). **Current version**: `r format(Sys.time(), '%B %d, %Y')`"
 #subtitle: "Short title goes here!"
 author:
@@ -7,18 +7,17 @@ author:
 - Monica Colon-Vargas$^1$
 - $^1$School of Public Health, Brown University, Providence, RI.
 abstract: | 
-  **Introduction:** hi
+  **Introduction:** In Latin America, obesity rates have reached alarming levels, posing serious health risks and placing a substantial burden on healthcare systems.
   
-  **Objective:** hi
-  **Methods:** hi
+  **Objective:** To decipher obesity dynamics focusing particularly on the triad interaction of main meals, high-calorie foods, and between-meal consumption rates.
   
-  **Results:** hi
+  **Methods:** We use cross-sectional data on $n = 498$ individuals aged between 14 and 61 years in three countries (Mexico, Peru, and Colombia) from the UC Irvine Machine Learning Repository. We categorize our outcome into normal weight, obese overweight, and underweight.  Proportional odds logistic regression model fitted to covariates selected by both lasso penalization and significance based on preliminary analyses is used to decipher the complex interplay of factors in obesity. We use up-sampling to handle class imbalance and perform diagnostics to evaluate performance of the model.
   
-  **Conclusion:** hi
+  **Results:** We find that the odds of obesity compared to normal weight increase by 0.33 for an individual who has three meals a day, frequently consumes high calorie foods and has a high rate of consumption of food between meals (snacks). 
   
+  **Conclusion:** We address the global health issue of obesity, with a specific focus on the diverse populations of Mexico, Peru, and Colombia. By examining individuals' eating habits and physical condition, tcontribute to the understanding of factors contributing to obesity prevalence in these regions and understand the underlying mechanisms driving the escalating rates of obesity. 
   
-  
-  ***Keywords:*** *Obesity, *Pandemic*, *Health risk*, *Lower socioeconomic groups.*
+  ***Keywords:*** *Obesity*, *Pandemic*, *Health risk*, *Lower socioeconomic groups.*
 keywords: "pandoc, r markdown, knitr"
 #date: "  `r format(Sys.time(), '%d %B, %Y')` "
 geometry: margin=1in
@@ -40,7 +39,7 @@ header-includes:
 - \usepackage[font=singlespacing]{caption} #can change font here for captions here!!
 - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines, commandchars=\\\{\}}
 - \singlespacing
-fontsize: 11pt
+fontsize: 12pt
 output:
   bookdown::pdf_document2:
     latex_engine: xelatex
@@ -95,17 +94,17 @@ theme_set(theme_minimal())
 
 # Introduction
 
-The World Health Organization (WHO) defines obesity as a chronic and intricate disease characterized by an accumulation of excess fat that poses significant health risks. This condition is not confined to isolated cases but has become alarmingly prevalent across numerous countries worldwide, warranting recognition as a global pandemic (CITE PAPER1). Among its many complications, obesity significantly elevates the risk of various health issues, including diabetes, fatty liver disease, hypertension, cardiovascular events like heart attacks and strokes, cognitive decline, joint ailments such as osteoarthritis, disrupted sleep patterns due to conditions like obstructive sleep apnea, and an increased susceptibility to certain types of cancer (CITE PAPER1). 
+The World Health Organization (WHO) defines obesity as a chronic and intricate disease characterized by an accumulation of excess fat that poses significant health risks. This condition is not confined to isolated cases but has become alarmingly prevalent across numerous countries worldwide, warranting recognition as a global pandemic [@paper1]. Among its many complications, obesity significantly elevates the risk of various health issues, including diabetes, fatty liver disease, hypertension, cardiovascular events like heart attacks and strokes, cognitive decline, joint ailments such as osteoarthritis, disrupted sleep patterns due to conditions like obstructive sleep apnea, and an increased susceptibility to certain types of cancer [@paper1]. 
 
-Literature suggests that the likelihood of obesity is influenced by a range of factors beyond individual characteristics, including demographic attributes, community infrastructure, socioeconomic conditions, and specific environmental factors within communities (CITE PAPER 2). In certain countries, particularly among lower socioeconomic groups, obesity rates have surged dramatically due to urbanization, shifts in diet and food availability, and reduced physical activity. This rise in obesity is linked to a significant increase in mortality from chronic diseases like type 2 diabetes, heart disease, and certain cancers, potentially shortening life expectancy by up to 20 years. Given the preventable nature of obesity and its associated health risks, early detection is crucial to mitigate the development of serious conditions such as cardiovascular issues, diabetes, and asthma. Obesity's complex origins involve various factors including socioeconomic status, occupation, and lifestyle habits like smoking and physical activity levels. Physical activity and eating habits are key in preventing obesity, as it primarily stems from an imbalance between calories consumed and expended. Weight loss typically involves reducing calorie intake, increasing energy expenditure, or both. When individuals consume more energy than needed, the excess is stored as fat, leading to obesity. Therefore, maintaining a healthy weight relies on a balanced diet and regular physical activity. (CITE PAPER3) 
-
-
-This work is centered in identifying determinants associated with obesity, with particular emphasis on exploring the interplay between socioeconomic indicators and lifestyle behaviors. In Latin American obesity rates have reached alarming levels, posing serious health risks and placing a substantial burden on healthcare systems CITE(paper4). Therefore this work will address the global health issue of obesity, with a specific focus on the diverse populations of Mexico, Peru, and Colombia. By examining individuals' eating habits and physical condition, this research aims to understand the factors contributing to obesity prevalence in these regions and understand the underlying mechanisms driving the escalating rates of obesity. 
+Literature suggests that the likelihood of obesity is influenced by a range of factors beyond individual characteristics, including demographic attributes, community infrastructure, socioeconomic conditions, and specific environmental factors within communities [@paper2]. In certain countries, particularly among lower socioeconomic groups, obesity rates have surged dramatically due to urbanization, shifts in diet and food availability, and reduced physical activity. This rise in obesity is linked to a significant increase in mortality from chronic diseases like type 2 diabetes, heart disease, and certain cancers, potentially shortening life expectancy by up to 20 years. Given the preventable nature of obesity and its associated health risks, early detection is crucial to mitigate the development of serious conditions such as cardiovascular issues, diabetes, and asthma. Obesity's complex origins involve various factors including socioeconomic status, occupation, and lifestyle habits like smoking and physical activity levels. Physical activity and eating habits are key in preventing obesity, as it primarily stems from an imbalance between calories consumed and expended. Weight loss typically involves reducing calorie intake, increasing energy expenditure, or both. When individuals consume more energy than needed, the excess is stored as fat, leading to obesity. Therefore, maintaining a healthy weight relies on a balanced diet and regular physical activity [@paper3]. 
 
 
-# Methodology
+This work is centered in identifying determinants associated with obesity, with particular emphasis on exploring the interplay between socioeconomic indicators and lifestyle behaviors. In Latin America, obesity rates have reached alarming levels, posing serious health risks and placing a substantial burden on healthcare systems [@paper4]. Therefore this work will address the global health issue of obesity, with a specific focus on the diverse populations of Mexico, Peru, and Colombia. By examining individuals' eating habits and physical condition, this research aims to understand the factors contributing to obesity prevalence in these regions and understand the underlying mechanisms driving the escalating rates of obesity. 
 
-### Data
+
+# Methods
+
+## Data
 
 ```{r}
 ## Load data
@@ -114,9 +113,9 @@ dat <- dat[1:498,] #take original data before SMOTE
 ```
 
 
-The dataset, accessible online at the UC Irvine Machine Learning Repository, includes information pertinent to estimating obesity levels among $(n=498)$ individuals aged 14 to 61 hailing from Mexico, Peru, and Colombia. Collected via a web-based survey administered to anonymous respondents, the dataset comprises 17 attributes and was available online for a duration of 30 days. Data collection involved posing questions as delineated in Table 1, which also details the variables under study and the methodology employed in the data collection process.
+The dataset, accessible online at the UC Irvine Machine Learning Repository, includes information pertinent to estimating obesity levels among $(n = 498)$ individuals aged 14 to 61 hailing from Mexico, Peru, and Colombia. Collected via a web-based survey administered to anonymous respondents, the dataset comprises 17 attributes and was available online for a duration of 30 days. Data collection involved posing questions as delineated in Table \ref{tab:one}, which also details the variables under study and the methodology employed in the data collection process.
 
-\begin{table}
+\begin{table}[htpb]
 \footnotesize
 \centering
 \caption{Variable Description}
@@ -178,10 +177,12 @@ Variable & Description & Values\\
 \addlinespace
 \bottomrule
 \end{tabularx}
+\label{tab:one}
 \end{table}
 
 
 ### Data Pre-processing
+
 Given the relatively modest sample size of our dataset, we anticipate potential challenges in conducting robust analyses. Our outcome variables comprise seven distinct levels, encompassing three tiers of obesity (Type I, II, III), two tiers of overweight (I, II), as well as normal weight and underweight categories. However, certain categories contain a limited number of individuals, necessitating the consolidation of some for better statistical reliability. Accordingly, we introduce a novel class termed "Obese," which consolidates the three levels of obesity, alongside a separate class denoted as "Overweight," housing the two levels thereof, while retaining the remaining categories unchanged. Furthermore, certain categories within the covariates exhibited minimal representation, with some even lacking individuals in certain categories. Consequently, we undertook additional aggregation of these classes. For instance, within the alcohol consumption variable, we combined the "always" and "frequently" classes into a singular category. Similarly, in the transportation variable, we merged "motorbike" and "automobile" into a consolidated class termed "motor vehicle," while amalgamating "walking" and "bike" into a unified category. 
 
 ```{r}
@@ -216,7 +217,7 @@ dat <- dat %>% rename(fam.hist = family_history_with_overweight)
 ```
 
 
-### Statistical Modeling
+## Statistical Modeling
 
 Since the outcome variable exhibits an ordinal nature, where the categories can be ordered as underweight < normal < overweight < obese, we opted for a modeling approach suited to such data characteristics. Specifically, we employed the generalized linear model framework, fitting a proportional odds model. This modeling technique allows us to account for the ordinal nature of the outcome variable and the inherent ordering of its categories. By utilizing the proportional odds model, we can assess the relationship between the predictors and the ordinal outcome variable while accommodating the cumulative nature of the categories. 
 
@@ -225,18 +226,26 @@ Since the outcome variable exhibits an ordinal nature, where the categories can 
 In light of the considerable number of variables present within the dataset, an approach to variable selection opted. To this end, we employed two distinct methodologies for variable selection. Primarily, variables were selected based on their significance as determined by p-values derived from the proportional odds model. Additionally, we conducted variable selection utilizing a proportional odds model with lasso penalization, a technique that inherently incorporates variable selection by penalizing less influential predictors. Subsequently, interactions among selected variables were explored, and the resultant models were meticulously compared to discern the most parsimonious and informative model structure. 
 
 ### Class Imbalance
-Given the class imbalance within the outcome variable, we  address this issue by employing an upsampling technique. The goal is to decrease the disparity by augmenting the instances of minority classes to achieve parity with the majority class, thereby fostering a more balanced representation across all categories. Subsequently, within this augmented dataset, we applied the same two variable selection techniques previously described. This approach ensures that the variable selection procedures are conducted on a dataset that reflects a more equitable distribution of observations across the various outcome categories, thereby mitigating potential biases and bolstering the reliability of the ensuing models. We additionally proceed to fit an additional model using the augmented dataset,incorporating solely those covariates that demonstrated statistical significance within the original dataset.
+Given the class imbalance within the outcome variable, we  address this issue by employing an upsampling technique. The goal is to decrease the disparity by augmenting the instances of minority classes to achieve parity with the majority class, thereby fostering a more balanced representation across all categories. Subsequently, within this augmented dataset, we applied the same two variable selection techniques previously described. This approach ensures that the variable selection procedures are conducted on a dataset that reflects a more equitable distribution of observations across the various outcome categories, thereby mitigating potential biases and bolstering the reliability of the ensuing models. We additionally proceed to fit an additional model using the augmented data set,incorporating solely those covariates that demonstrated statistical significance within the original data set.
 
-### Model Comparisons
-The majority of models analyzed in this study were nested, with assessments primarily relying on information criteria such as the Akaike Information Criteria (AIC) and Bayesian Information Criteria (BIC). Notably, the BIC was preferred over the AIC due to its heightened penalty with larger sample sizes, leading to more stringent significance thresholds CITE(BIC). Model comparisons were conducted using the likelihood ratio test (LRT), aimed at examining competing models by testing the null hypothesis that the simpler and more complex models are equally effective. Specifically, this test assesses whether the additional parameters in the larger model significantly improve fit, implying that their effect sizes are statistically indistinguishable from zero.
+## Model Diagnostics
 
+**Likelihood Ratio Tests (LRT) and Information Criterion.** The majority of models analyzed in this study were nested, with assessments primarily relying on information criteria such as the Akaike Information Criteria (AIC) and Bayesian Information Criteria (BIC). Notably, the BIC was preferred over the AIC due to its heightened penalty with larger sample sizes, leading to more stringent significance thresholds [@BIC]. Model comparisons were conducted using the likelihood ratio test (LRT), aimed at examining competing models by testing the null hypothesis that the simpler and more complex models are equally effective. Specifically, this test assesses whether the additional parameters in the larger model significantly improve fit, implying that their effect sizes are statistically indistinguishable from zero.
+
+**Proportional Odds Assumption.** We tested the parallel regression assumption of the fitted proportional odds model using the Brant test using the `brant` package and function of the same name in `R`. The Brant test of the parallel regression assumption tests the null hypothesis that the proportional odds assumption holds for all covariates combined and when considered independently. 
+
+**Goodness of fit test:** We used the chi-squared test to assess whether a statistically significant difference between the observed and predicted frequencies for each outcome class. Our null hypothesis using the chi-squared test for goodness of fit test was that there would be a significant difference between the observed and predicted outcome class frequencies, implying that the model fits the data poorly.
+
+**Leverage, Influential Observations and Multicollinearity.** Leverage and influential observations in the data set were examined by deleting the $i^{th}$ observation and fitting the model without this observation. A change in the parameter estimates (in their absolute values) was then used as an indicator of the influence of observation $i$. We examined multicollinearity using the variance inflation factor (VIF), that is, a measure of how the variance of the estimated coefficients is increased due to multicollinearity.
+
+**Variable Importance and Sensitivity Analysis.** We characterized variable importance by the magnitude of the coefficients. Larger coefficients (in absolute value) indicate more important variables. Sensitivity analysis involved assessing the robustness of the model estimate results to changes in modeling assumptions or data specifications. Here, we changed the fitting method to `probit` and to examine whether the rank of the important variables would change substantially. This would provide an idea of the stability of the variables.
 
 
 # Results
 
-### Descriptive Statistics
+## Descriptive Statistics
 
-```{r}
+```{r two}
 ## Summary Statistics
 dat %>% tbl_summary(digits = list(everything() ~ c(2)),
                     statistic = list(all_continuous() ~ "{mean} ({sd})"),
@@ -258,23 +267,22 @@ dat %>% tbl_summary(digits = list(everything() ~ c(2)),
   add_overall() %>% 
   bold_labels() %>%
   as_kable_extra(booktabs = TRUE, caption = "Summary Statistic Stratified by Outcome Category") %>% 
-  kableExtra::kable_styling(latex_options = "scale_down")
+  kableExtra::kable_styling(latex_options = c("scale_down","hold_position") )
 
 ```
 
-Table 2 presents an overview of participant characteristics stratified by each outcome category.  Notably, the distribution across categories reveals a significant class imbalance, with only 34 participants categorized as underweight compared to 64 classified as obese. Conversely, the overweight category encompasses 116 participants, with the highest representation observed within the normal weight classification.
+Table \@ref(tab:two) presents an overview of participant characteristics stratified by each outcome category.  Notably, the distribution across categories reveals a significant class imbalance, with only 34 participants categorized as underweight compared to 64 classified as obese. Conversely, the overweight category encompasses 116 participants, with the highest representation observed within the normal weight classification.
 
 
 Within the subset of 64 obese participants, 53 (86.80%) individuals  exhibit familial overweight history, whereas among the underweight subset, 16 (47.06%) individuals demonstrate a similar familial predisposition.
 Regarding dietary habits, individuals categorized as normal weight exhibit the highest prevalence of high-caloric food consumption, followed sequentially by obese, overweight, and underweight counterparts. Additionally, observing the frequency of vegetable consumption, we can see 55.88% of underweight participants consuming vegetables in all three main meals, while 59% of obese and overweight individuals consume vegetables in two main meals. Meal frequency reveals that most participants consume three daily main meals, while a minority consumes only one daily meal. Moreover, between-meal eating habits are prevalent across all weight categories, with few individuals abstaining from between-meal consumption. Remarkably, a significant proportion (52.95%) of underweight participants report frequent between-meal snacking. Hydration patterns among participants indicate a consistent consumption of approximately 2-3 liters of water daily. Public transportation emerges as the preferred mode of transportation among participants. Furthermore, physical activity engagement varies across weight categories, with 45.9% of obese individuals reporting no weekly physical activity.
 
 
+## Model Comparisons
 
-### Model Results
+A proportional odds model was employed to analyze the original dataset comprising $(n=498)$ observations. Variable selection techniques, specifically LASSO regularization and p-value-based selection, yielded identical sets of significant predictors. These predictors included age, height, daily number of complete meals, weekly physical activity, daily water intake (L), and technology usage duration. To comprehensively explore potential interactions among these predictors, two-way and three-way interaction terms were examined. The interaction between age and height, the daily frequency of meals and physical activity, as well as physical activity and water intake, were found to be statistically non-significant. However, a three-way interaction involving the daily frequency of meals, physical activity, and water intake exhibited significance across most coefficient estimates. Despite this, a series of likelihood ratio tests were conducted, comparing models with varying complexity to a simpler baseline model. Likelihood ratio tests consistently favored the simpler model over those incorporating the interaction terms. Consequently, despite the significant findings regarding the three-way interaction, the simpler model without interactions was deemed more favorable based on the statistical evidence obtained from the likelihood ratio tests. Table \@ref(tab:three) displays the AIC and BIC values for the various models. It is evident that the reduced model, which excludes interactions, exhibits the lowest AIC and BIC scores.
 
-A proportional odds model was employed to analyze the original dataset comprising $(n=498)$ observations. Variable selection techniques, specifically LASSO regularization and p-value-based selection, yielded identical sets of significant predictors. These predictors included age, height, daily number of complete meals, weekly physical activity, daily water intake (L), and technology usage duration. To comprehensively explore potential interactions among these predictors, two-way and three-way interaction terms were examined. The interaction between age and height, the daily frequency of meals and physical activity, as well as physical activity and water intake, were found to be statistically non-significant. However, a three-way interaction involving the daily frequency of meals, physical activity, and water intake exhibited significance across most coefficient estimates. Despite this, a series of likelihood ratio tests were conducted, comparing models with varying complexity to a simpler baseline model. Likelihood ratio tests consistently favored the simpler model over those incorporating the interaction terms. Consequently, despite the significant findings regarding the three-way interaction, the simpler model without interactions was deemed more favorable based on the statistical evidence obtained from the likelihood ratio tests. Table 3 displays the AIC and BIC values for the various models. It is evident that the reduced model, which excludes interactions, exhibits the lowest AIC and BIC scores.
-
-```{r}
+```{r three}
 mod.polr.reduced <- polr(NObeyesdad ~ Age + Height + NCP + CH2O + FAF +TUE, 
                          data = dat, Hess=TRUE,method = "logistic")
 ## Interactions
@@ -305,11 +313,10 @@ res %>%
 set.seed(123)
 dat2 <- upSample(dat %>% dplyr::select(-NObeyesdad),dat$NObeyesdad)
 dat2 <- dat2 %>% rename(NObeyesdad = "Class")
-
 ```
 
 
-One important issue observed in these models pertains to class imbalance, where a disproportionate focus on these models is placed on accurately predicting instances within the normal weight class, while neglecting predictions for other weight categories. This imbalance is evidenced by the extreme case where the obese class fails to yield any predicted instances. Consequently, we address this imbalance by generating a new synthetic dataset wherein the underrepresented classes were upsampled. This augmented dataset now encompasses a total of $n=1148$ observations, evenly distributed with 287 observations allocated to each outcome category.
+One important issue observed in these models pertains to class imbalance, where a disproportionate focus on these models is placed on accurately predicting instances within the normal weight class, while neglecting predictions for other weight categories. This imbalance is evidenced by the extreme case where the obese class fails to yield any predicted instances. Consequently, we address this imbalance by generating a new synthetic dataset wherein the underrepresented classes were upsampled. This augmented dataset now encompasses a total of $n = 1148$ observations, evenly distributed with 287 observations allocated to each outcome category.
 
 In the augmented dataset, both variable selection methods are employed. The LASSO penalty method exhibits limited variable selection, as it only omits the gender variable. Conversely, selection based on p-values results in a more concise set of significant variables, including family history of overweight, high-calorie food consumption, daily number of complete meals, eating between meals, physical activity, and technology usage duration. 
 
@@ -337,7 +344,7 @@ mod.up.int5 <- polr(NObeyesdad ~ fam.hist + FAF+NCP*FAVC*CAEC + TUE,
                     data = dat2, Hess=TRUE,method = "logistic")
 ```
 
-```{r}
+```{r four}
 
 res <- data.frame(AIC = AIC(mod.up.reduced,mod.up.int1,mod.up.int2,mod.up.int3,mod.up.int4,mod.up.int5)$AIC,
                   BIC = BIC(mod.up.reduced,mod.up.int1,mod.up.int2,mod.up.int3,mod.up.int4,mod.up.int5)$BIC)
@@ -352,11 +359,11 @@ res %>%
 
 ```
 
-### Coefficients Interpretation
+## Unveiling the complex interplay between factors determining obesity
 
-We present significant coefficients of the model with three way interactions
+In Table \@ref(tab:five), we present significant coefficients of the model with three way interactions. We focus on the interaction term here noting that the odds of obesity compared to normal weight increase by 0.33 for an individual who has three meals a day, frequently consumes high calorie foods and has a high rate of consumption of food between meals (snacks) holding other factors constant. 
 
-```{r}
+```{r five}
 
 #tidy(mod.up.int5,pvalue = T)
 
@@ -382,7 +389,7 @@ results <- data.frame(
 )
 
 results %>%
-  kbl(caption = "Coefficients",
+  kbl(caption = "Regression coefficients based on the proportional odds logistic model",
       booktabs = TRUE, escape = FALSE, align = "c") %>%
   kable_styling(full_width = FALSE, latex_options = c('hold_position'))
 
@@ -393,14 +400,100 @@ results %>%
 ```
 
 
-### Model Diagnostics
+## Diagnostics and Performance Evaluation 
 
+We present results of our diagnostics and performance evaluation for the selected model. This model included the three-way interaction between number of main meals per day, frequent consumption of high calorie foods and the rate consumption of food between meals.
+
+Our results based on the Brant test of the parallel regression assumption did not indicate substantial deviations of our selected model from the parallel regression assumption. We found no significant evidence of the combined effect of all covariates deviating from the null hypothesis ($\chi^2_{(22)} = 1022.54, p<0.001$).
+
+Our chi-square goodness of fit test results provided evidence against the null hypothesis of poor fit alluding to the model performing relatively well. The predicted frequencies for each outcome appeared to be within what would be expected under a good fit ($\chi^2_{(3)} = 232.33, p < 0.001$).
+
+Influential observation check did not reveal any substantial issues. The maximum change in any parameter estimate when each observation is left out was no more than 1.38 (on the log odds scale). Observations that cause a large change in the estimates might be considered influential with a common rule of thumb being that an observation might be influential if removing it changes the coefficient estimate by more than 20%. Additionally, there were no substantial issues with collinearity with all VIF Values being less than. VIF values up to 5 are usually interpreted as uncritical, values above 5 denote a considerable multicollinearity [@VIF].
+
+Figure \@ref(fig:figa) depicts the variable importance under the proportional odds logistic regression. The model shows the significant role of the interaction between number of main meals per day (three meals), frequent consumption of high calorie foods (yes) and the rate consumption of food between meals (no snacking). This is followed by the interaction between the number of main meals per day (three meals) and no snacking. 
+
+```{r figa, fig.cap="Variable importance under the proportional odds logistic regression", dpi = 300, fig.align='center', out.width='90%'}
+model <- polr(NObeyesdad ~ fam.hist + FAF+NCP*FAVC*CAEC + TUE, 
+              data = dat2, Hess=TRUE,method = "logistic")
+
+## Coefs in best model under logistic
+coef <- coef(model)
+abs_coef <- abs(coef)
+coef_df <- data.frame(Variable = names(abs_coef), Importance = abs_coef)
+coef_df <- coef_df[order(coef_df$Importance, decreasing = TRUE), ]
+aa = ggplot(coef_df, aes(x = reorder(Variable, Importance), y = Importance)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "(a)", x = "Variable", y = "Importance") + 
+  theme_bw()
+aa
+```
+
+In Figure \@ref(fig:figb), we compare these covariates and those ranked by the probit regression method of fitting the model. We see that the first 7 coefficients rank similarly when the two methods are used and the results only slightly vary. Sensitivity analysis revealed (to some extent) the robustness of the model estimate results to changes in modeling assumptions providing an idea of the stability of the variables. The slight differences in how these models rank the coefficients could suggest that the relationship between that predictor and the response is not stable across different modeling approaches. Inconsistent rankings of coefficients between models in sensitivity analysis highlight the need for cautious interpretation and further investigation to ensure robust and reliable model results. 
+
+```{r figb, fig.cap="Variable importance under the proportional odds logistic regression", dpi = 300, fig.align='center', out.width='90%'}
+## comparing logistic and probit
+
+sensitivity_model <- polr(NObeyesdad ~ fam.hist + FAF+NCP*FAVC*CAEC + TUE, 
+              data = dat2, Hess=TRUE,method = "probit") # Changed method to probit
+# do variable importance again and compare to the original by plotting side by side
+coef <- coef(sensitivity_model)
+# Get the absolute values of the coefficients
+abs_coef <- abs(coef)
+# Create a data frame for plotting
+coef_df <- data.frame(Variable = names(abs_coef), Importance = abs_coef)
+# Order the variables by importance
+coef_df2 <- coef_df[order(coef_df$Importance, decreasing = TRUE), ]
+bb = ggplot(coef_df2, aes(x = reorder(Variable, Importance), y = Importance)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(title = "(b)", x = "Variable", y = "Importance")+ theme_bw()
+
+gridExtra::grid.arrange(aa, bb, ncol = 2)
+```
 
 # Discussion
 
+## Overview
+
+The objective of this study is to ascertain the determinants that lead to obesity, with a particular emphasis on the interplay between socioeconomic indicators and lifestyle behaviors across the diverse demographics of Mexico, Peru, and Colombia. The alarming rates of obesity in Latin America pose a major health challenge and place a significant strain on healthcare systems. This investigation endeavors to gain insight into the factors that contribute to the high prevalence of obesity in these areas, as well as the underlying mechanisms that propel the escalating rates of obesity. To achieve this, the study will delve into individuals' dietary patterns and physical well-being.
+
+## Key Finding
+
+The proportional logistic regression model yielded noteworthy results, uncovering several significant predictors of obesity. Specifically, the variables `NCP3`, `NCP4`, `FAVCyes`, `CAECno`, `CAECSometimes`, and their interactions were found to be considerably associated with obesity. These findings underscore the critical impact that these factors - which reflect different facets of a person's dietary habits and physical state - have on determining levels of obesity.
+
+## Study strengths
+
+An important advantage of this research is its emphasis on the varied populations of Mexico, Peru, and Colombia, which offers a broader perspective on the factors contributing to obesity in these regions. Moreover, the proportional logistic regression model employed in the study facilitated the investigation of the interrelationship between different socioeconomic factors and lifestyle choices, yielding meaningful insights into the intricate dynamics underlying obesity prevalence.
+
+The finding of a significant three-way interaction between the number of main meals per day, frequent consumption of high-calorie foods, and the rate of consumption of food between meals in relation to the obesity complex is highly substantive in the context of public health, particularly in countries like Mexico, Peru, and Colombia, as well as globally.
+
+Similar to many countries worldwide, Mexico, Peru, and Colombia are facing an obesity epidemic. It is essential to comprehend the intricate factors that contribute to obesity to design public health interventions that are effective in addressing this issue. The interactions that have been identified reveal particular dietary behaviors that may either worsen or alleviate the risk of obesity. These insights can be invaluable in crafting targeted interventions.
+
+Lasting, while the study focused on Mexico, Peru, and Colombia, the identified interactions likely have broader relevance beyond these countries. Similar patterns of dietary behaviors and their associations with obesity risk are observed globally. Therefore, understanding these interactions can inform public health efforts in diverse cultural and geographical settings.
+
+## Limitations and Future Directions
+
+Despite this study's strengths, some limitations must be considered. One is that self-reporting was used to collect the data, which could be subject to reporting bias. To validate the findings, future studies should include objective measures of physical activity and dietary intake.
+
+Another limitation is that the study was cross-sectional, which means that causality cannot be inferred. To confirm the causal relationships suggested by the findings, longitudinal studies are necessary.
+
+Lastly, while the study accounted for several important factors, other unmeasured confounding variables could still influence the results. Future research should consider additional factors, such as genetic predispositions, mental health status, and environmental influences.
+
+## Conclusion
+
+In conclusion, this study offers valuable insights into the factors that contribute to obesity in the diverse populations of Mexico, Peru, and Colombia. The findings underscore the significance of lifestyle behaviors in relation to obesity and emphasize the need for interventions that promote healthy eating habits and regular physical activity. Future research should address the limitations of the current study and continue to explore the intricate interplay between socioeconomic indicators and lifestyle behaviors in relation to obesity.
+
 
 \newpage
+# References
+
+<div id="refs"></div>
+
+\newpage
+<!--
 # Code Appendix
 ```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE, include=TRUE}
 ```
 
+-->
