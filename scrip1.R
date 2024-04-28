@@ -104,12 +104,12 @@ dat %>% tbl_summary(digits = list(everything() ~ c(2)),
 ## Some plots (not usefull?)
 my_palette <- c("darkblue", "darkgreen", "darkred", "purple4")
 
-ggplot(dat, aes(x = MTRANS, fill = NObeyesdad)) +
-  geom_bar(position = "dodge", color = "black") +
+ggplot(dat, aes(x = NObeyesdad)) +
+  geom_bar(position = "dodge", fill = "grey", color = "black") +
   scale_fill_manual(values = my_palette, name = "Obesity Status", 
                     labels = c("Normal", "Obese", "Overweight", "Underweight")) +
-  labs(x = "Transportation", y = "Count", fill = "Obesity Status") +
-  ggtitle("Obesity Status by Vehicle Used")
+  labs(x = "Obesity", y = "Count", fill = "Obesity Status") +
+  ggtitle("Outcome Variable")
 
 df <- as.data.frame(prop.table(table(dat$FAVC,dat$NObeyesdad),margin = 2))
 df$Freq <- df$Freq*100

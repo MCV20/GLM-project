@@ -1,5 +1,5 @@
 ---
-title: "Cracking the Obesity Code: Unraveling the Trifecta Intricacies of Meal Patterns, Caloric Food Consuption Rate, and Snacking Habits"
+title: "Cracking Obesity: Understanding the Interplay of Meal Patterns, Caloric Intake, and Snacking Habits"
 thanks: "Replication files are available on the author's Github account (https://github.com/MCV20/GLM-project.git). **Current version**: `r format(Sys.time(), '%B %d, %Y')`"
 #subtitle: "Short title goes here!"
 author:
@@ -13,7 +13,7 @@ abstract: |
   
   **Methods:** We use cross-sectional data on $n = 498$ individuals aged between 14 and 61 years in three countries (Mexico, Peru, and Colombia) from the UC Irvine Machine Learning Repository. We categorize our outcome into normal weight, obese overweight, and underweight.  Proportional odds logistic regression model fitted to covariates selected by both lasso penalization and significance based on preliminary analyses is used to decipher the complex interplay of factors in obesity. We use up-sampling to handle class imbalance and perform diagnostics to evaluate performance of the model.
   
-  **Results:** We find that the odds of obesity compared to normal weight increase by 0.33 for an individual who has three meals a day, frequently consumes high calorie foods and has a high rate of consumption of food between meals (snacks). 
+  **Results:** The significant interaction suggests that the impact of eating three complete meals daily on transitioning to a higher weight category is influenced by both consuming high-calorie foods and occasional between-meal eating. When both of these behaviors are present, the odds of moving to a higher weight category with each additional daily meal increase significantly, approximately 8.5 times higher compared to when these factors are absent. 
   
   **Conclusion:** We address the global health issue of obesity, with a specific focus on the diverse populations of Mexico, Peru, and Colombia. By examining individuals' eating habits and physical condition, tcontribute to the understanding of factors contributing to obesity prevalence in these regions and understand the underlying mechanisms driving the escalating rates of obesity. 
   
@@ -99,7 +99,7 @@ The World Health Organization (WHO) defines obesity as a chronic and intricate d
 Literature suggests that the likelihood of obesity is influenced by a range of factors beyond individual characteristics, including demographic attributes, community infrastructure, socioeconomic conditions, and specific environmental factors within communities [@paper2]. In certain countries, particularly among lower socioeconomic groups, obesity rates have surged dramatically due to urbanization, shifts in diet and food availability, and reduced physical activity. This rise in obesity is linked to a significant increase in mortality from chronic diseases like type 2 diabetes, heart disease, and certain cancers, potentially shortening life expectancy by up to 20 years. Given the preventable nature of obesity and its associated health risks, early detection is crucial to mitigate the development of serious conditions such as cardiovascular issues, diabetes, and asthma. Obesity's complex origins involve various factors including socioeconomic status, occupation, and lifestyle habits like smoking and physical activity levels. Physical activity and eating habits are key in preventing obesity, as it primarily stems from an imbalance between calories consumed and expended. Weight loss typically involves reducing calorie intake, increasing energy expenditure, or both. When individuals consume more energy than needed, the excess is stored as fat, leading to obesity. Therefore, maintaining a healthy weight relies on a balanced diet and regular physical activity [@paper3]. 
 
 
-This work is centered in identifying determinants associated with obesity, with particular emphasis on exploring the interplay between socioeconomic indicators and lifestyle behaviors. In Latin America, obesity rates have reached alarming levels, posing serious health risks and placing a substantial burden on healthcare systems [@paper4]. Therefore this work will address the global health issue of obesity, with a specific focus on the diverse populations of Mexico, Peru, and Colombia. By examining individuals' eating habits and physical condition, this research aims to understand the factors contributing to obesity prevalence in these regions and understand the underlying mechanisms driving the escalating rates of obesity. 
+This work is centered in identifying determinants associated with obesity, with particular emphasis on  lifestyle behaviors. In Latin America, obesity rates have reached alarming levels, posing serious health risks and placing a substantial burden on healthcare systems [@paper4]. Therefore this work will address the global health issue of obesity, with a specific focus on the diverse populations of Mexico, Peru, and Colombia. By examining individuals' eating habits and physical condition, this research aims to understand the factors contributing to obesity prevalence in these regions and understand the underlying mechanisms driving the escalating rates of obesity. 
 
 
 # Methods
@@ -197,8 +197,13 @@ dat$MTRANS[dat$MTRANS == "Walking"] <- "Walking/Bike"
 dat$NObeyesdad <- ifelse(dat$NObeyesdad %in% c("Obesity_Type_I", "Obesity_Type_II", "Obesity_Type_III"), "Obese", dat$NObeyesdad)
 dat$NObeyesdad <- ifelse(dat$NObeyesdad %in% c("Overweight_Level_I", "Overweight_Level_II"), "Overweight", dat$NObeyesdad)
 dat$NObeyesdad[dat$NObeyesdad == "Insufficient_Weight"] <- "Underweight"
+dat$NObeyesdad[dat$NObeyesdad == "Normal_Weight"] <- "Normal.Weight"
 
 ## Factor variables
+
+dat$NObeyesdad <- factor(dat$NObeyesdad, ordered = TRUE, levels = c("Underweight", "Normal.Weight", "Overweight", "Obese"))
+
+
 dat <- dat %>%
   mutate_if(is.character, as.factor)
 
@@ -361,7 +366,8 @@ res %>%
 
 ## Unveiling the complex interplay between factors determining obesity
 
-In Table \@ref(tab:five), we present significant coefficients of the model with three way interactions. We focus on the interaction term here noting that the odds of obesity compared to normal weight increase by 0.33 for an individual who has three meals a day, frequently consumes high calorie foods and has a high rate of consumption of food between meals (snacks) holding other factors constant. 
+In Table \@ref(tab:five), we present significant coefficients of the model with three way interactions. The statistically significant three-way interaction between `NCP3`, `FAVCyes`, and `CAECSometimes` suggests that the effect of eating three complete main meals daily on the odds of being in a higher weight category compared to a lower one is modified by the presence of both eating high calorie food consumption and sometimes eating between meals. When both eating high caloric food and sometimes eating between meals are present, the odds of moving to a higher weight category for each unit increase in number of daily meals are approximately 8.5 (e^2.142) times higher compared to when these variables are absent.
+
 
 ```{r five}
 
@@ -372,9 +378,10 @@ model <- mod.up.int5
 model_summary <- data.frame(summary(mod.up.int5)$coefficients)
 
 # Extract coefficients and standard errors
-coefficients <- coef(model)
+coefficients <- model_summary$Value
+names(coefficients) <- rownames(model_summary)
 
-standard_errors <- sqrt(model_summary$Std..Error)[1:21]
+standard_errors <- sqrt(model_summary$Std..Error)
 
 # Calculate z-values and p-values
 z_values <- coefficients / standard_errors

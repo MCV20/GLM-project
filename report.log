@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 24.1) (preloaded format=xelatex 2024.2.20)  28 APR 2024 00:14
+This is XeTeX, Version 3.141592653-2.6-0.999995 (MiKTeX 24.1) (preloaded format=xelatex 2024.2.20)  28 APR 2024 18:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1327,17 +1327,16 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[8]
+[8] [9]
 File: report_files/figure-latex/figa-1.pdf Graphic file (type pdf)
 <use report_files/figure-latex/figa-1.pdf>
-[9]
 File: report_files/figure-latex/figb-1.pdf Graphic file (type pdf)
 <use report_files/figure-latex/figb-1.pdf>
 [10] [11] [12]
 LaTeX Font Info:    Font shape `TU/cochineal(0)/m/it' will be
-(Font)              scaled to size 12.0pt on input line 518.
+(Font)              scaled to size 12.0pt on input line 521.
 
-Underfull \hbox (badness 1210) in paragraph at lines 517--519
+Underfull \hbox (badness 1210) in paragraph at lines 520--522
 \TU/cochineal(0)/m/n/12 Blüher, Matthias. 2019. “Obesity: Global Epidemiology a
 nd Pathogenesis.” \TU/cochineal(0)/m/it/12 Nature Reviews
  []
